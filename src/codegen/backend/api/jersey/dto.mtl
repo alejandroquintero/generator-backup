@@ -181,11 +181,11 @@ public class [className/] extends [c.getMinimumDTOName()/]{
     [if (not a.isComposite())]@PodamExclude[/if]
     private [a.getClass().getMinimumDTOName()/] [a.name/];
 [/if]
-[if (a.getUpper() <> 1)]
-    [if (not a.isComposite())]@PodamExclude[/if]
-    private [a.getClass().getMinimumDTOName()/] [a.name/];
-[/if]
 
+[a.isMany2Many()/]
+[a.isMany2One()/]
+[a.isOne2Many()/]
+[a.isOne2One()/]
 [/for]
 
     /**
