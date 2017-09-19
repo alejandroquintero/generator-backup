@@ -181,8 +181,11 @@ public class [className/] extends [c.getMinimumDTOName()/]{
     [if (not a.isComposite())]@PodamExclude[/if]
     private [a.getClass().getMinimumDTOName()/] [a.name/];
 [/if]
-[a.getUpper()/]
-[a.eAllContents()/]
+[if (a.getUpper() <> 1)]
+    [if (not a.isComposite())]@PodamExclude[/if]
+    private [a.getClass().getMinimumDTOName()/] [a.name/];
+[/if]
+
 [/for]
 
     /**
