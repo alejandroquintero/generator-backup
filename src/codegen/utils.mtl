@@ -158,6 +158,7 @@ Class.allInstances()->select(c | c.isGeneralization() and c.generalization->sele
 /]
 
 [query public isGeneralization(cl : Class) : Boolean =
+
 cl.generalization->notEmpty()
 /]
 
