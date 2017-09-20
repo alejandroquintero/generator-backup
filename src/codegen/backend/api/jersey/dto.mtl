@@ -181,7 +181,7 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [if (a.isComposite)]
 [if (a.isOne2Many())]
 @PodamExclude
-private List<[a.getOtherEnd().getClass().name/]Entity> [a.getOtherEnd().name/];
+private List<[a.getClass().name/]Entity> [a.name/];
 [/if]
 [/if]
 
