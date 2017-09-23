@@ -221,7 +221,7 @@ private [a.getClass().getDTOName()/] [a.name/];
         [/if]
         [/for] 
        
-        [for (a : Property | c.getReferences(true))]
+        [for (a : Property | c.getRelationshipAttributes())]
         if (entity.[a.getter()/]()!=null){
         
         [if (a.isOne2Many())]
@@ -248,7 +248,7 @@ private [a.getClass().getDTOName()/] [a.name/];
         List<[c.getEntityName()/]> [c.name/]Elist = new ArrayList<>();
         [/if]
 [/for]
-[for (a : Property | c.getReferences(true))]
+[for (a : Property | c.getRelationshipAttributes())]
         if (this.[a.getter()/]()!=null){
      
         [if (a.isOne2Many())]
