@@ -223,13 +223,13 @@ private [a.getClass().getDTOName()/] [a.name/];
        
         [for (a : Property | c.getReferences(true))]
         if (entity.[a.getter()/]()!=null){
-        [for (p : Property | c.getRelationshipAttributes() )]
-        [if (p.isOne2Many())]
+        
+        [if (a.isOne2Many())]
         for([c.getEntityName()/] loop : entity.get[if (c.name.endsWith('s'))][c.name.first(0).toUpperCase()/]es[else][c.name.first(0).toUpperCase()/]s[/if] )
          [c.name/]Elist.add(new [c.getDTOName()/](loop));
         this.[if (c.name.endsWith('s'))][c.name/]es[else][a.name/]s[/if].add([c.name/]Elist);
         [/if]
-        [/for] 
+       
         [/for]
         
     }
@@ -250,14 +250,12 @@ private [a.getClass().getDTOName()/] [a.name/];
 [/for]
 [for (a : Property | c.getReferences(true))]
         if (this.[a.getter()/]()!=null){
-        [for (p : Property | c.getRelationshipAttributes() )]
-        [if (p.isOne2Many())]
-      for([c.getDTOName()/] loop : this.[if (p.name.endsWith('s'))][p.name/]es[else][p.name/]s[/if] )
+     
+        [if (a.isOne2Many())]
+      for([c.getDTOName()/] loop : this.[if (c.name.endsWith('s'))][c.name/]es[else][c.name/]s[/if] )
          [c.name/]Elist.add(loop.toEntity());
-        entity.set[if (p.name.endsWith('s'))][p.name.first(0).toUpperCase()/]es[else][p.name.first(0).toUpperCase()/]s[/if]([c.name/]Elist)  
+        entity.set[if (c.name.endsWith('s'))][c.name.first(0).toUpperCase()/]es[else][c.name.first(0).toUpperCase()/]s[/if]([c.name/]Elist)  
         [/if]
-       
-[/for]
        
 [/for]
         return entity;
