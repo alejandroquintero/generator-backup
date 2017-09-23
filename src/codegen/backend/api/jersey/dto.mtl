@@ -215,6 +215,7 @@ private [a.getClass().getDTOName()/] [a.name/];
      */
     public [className/]([c.getEntityName()/] entity) {
         super(entity);
+        
         [for (q : Property | c.getRelationshipAttributes() )]
         [if (q.isOne2Many())]
         List<[c.getDTOName()/]> [c.name/]Elist = new ArrayList<>();
@@ -222,10 +223,10 @@ private [a.getClass().getDTOName()/] [a.name/];
         [/for] 
        
         [for (a : Property | c.getRelationshipAttributes())]
-        if (entity.[a.getter()/]()!=null){
+        if (entity.[a.getter()/]().size()!=0){
         
         [if (a.isOne2Many())]
-        for([c.getEntityName()/] loop : entity.get[if (c.name.endsWith('s'))][c.name.first(0).toUpperCase()/]es[else][c.name.first(0).toUpperCase()/]s[/if] )
+        for([c.getEntityName()/] loop : entity.get[if (c.name.endsWith('s'))][c.name/]es[else][c.name/]s[/if] )
          [c.name/]Elist.add(new [c.getDTOName()/](loop));
         this.[if (c.name.endsWith('s'))][c.name/]es[else][a.name/]s[/if].add([c.name/]Elist);
         [/if]
@@ -249,7 +250,7 @@ private [a.getClass().getDTOName()/] [a.name/];
         [/if]
 [/for]
 [for (a : Property | c.getRelationshipAttributes())]
-        if (this.[a.getter()/]()!=null){
+        if (this.[a.getter()/]().size()!=0){
      
         [if (a.isOne2Many())]
       for([c.getDTOName()/] loop : this.[if (c.name.endsWith('s'))][c.name/]es[else][c.name/]s[/if] )
