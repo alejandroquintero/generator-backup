@@ -176,10 +176,27 @@ import uk.co.jemos.podam.common.PodamExclude;
 public class [className/] extends [c.getMinimumDTOName()/]{
 
 
-[for (a : Property | c.getRelationshipAttributes())]   
-[if (a.getUpper() = 1)]
-    [if (not a.isComposite())]@PodamExclude[/if]
-    private [a.getClass().getMinimumDTOName()/] [a.name/];
+[for (a : Property | c.getRelationshipAttributes())]  
+
+[if (a.isComposite)]
+[if (a.isOne2One())]
+@PodamExclude
+private [a.getClass().getDTOName()/] [a.name/];
+[/if]
+[if (a.isOne2Many())]
+@PodamExclude
+private List<[a.getClass().getDTOName()/]> [if (a.name.endsWith('s'))][a.name/]es[else][a.name/]s[/if];
+[/if]
+[/if]
+[if (not a.isComposite())]
+[if (a.isMany2One())]
+@PodamExclude
+private [a.getClass().getDTOName()/] [a.name/];
+[/if]
+[if (a.isOne2One())]
+@PodamExclude
+private [a.getClass().getDTOName()/] [a.name/];
+[/if]
 [/if]
 [/for]
 
@@ -198,10 +215,22 @@ public class [className/] extends [c.getMinimumDTOName()/]{
      */
     public [className/]([c.getEntityName()/] entity) {
         super(entity);
-        [for (a : Property | c.getReferences(true))]
-        if (entity.[a.getter()/]()!=null){
-        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
-        }
+        
+        [for (q : Property | c.getRelationshipAttributes() )]
+        [if (q.isOne2Many())]
+        List<[c.getDTOName()/]> [c.name/]Elist = new ArrayList<>();
+        [/if]
+        [/for] 
+       
+        [for (a : Property | c.getRelationshipAttributes())]
+        if (entity.[a.getter()/]().size()!=0){
+        
+        [if (a.isOne2Many())]
+        for([c.getEntityName()/] loop : entity.get[if (c.name.endsWith('s'))][c.name/]es[else][c.name/]s[/if] )
+         [c.name/]Elist.add(new [c.getDTOName()/](loop));
+        this.[if (c.name.endsWith('s'))][c.name/]es[else][a.name/]s[/if].add([c.name/]Elist);
+        [/if]
+       
         [/for]
         
     }
@@ -215,10 +244,20 @@ public class [className/] extends [c.getMinimumDTOName()/]{
     @Override
     public [c.getEntityName()/] toEntity() {
         [c.getEntityName()/] entity = super.toEntity();
-[for (a : Property | c.getReferences(true))]
-        if (this.[a.getter()/]()!=null){
-        entity.[a.setter()/](this.[a.getter()/]().toEntity());
-        }
+      [for (q : Property | c.getRelationshipAttributes() )]
+        [if (q.isOne2Many())]
+        List<[c.getEntityName()/]> [c.name/]Elist = new ArrayList<>();
+        [/if]
+[/for]
+[for (a : Property | c.getRelationshipAttributes())]
+        if (this.[a.getter()/]().size()!=0){
+     
+        [if (a.isOne2Many())]
+      for([c.getDTOName()/] loop : this.[if (c.name.endsWith('s'))][c.name/]es[else][c.name/]s[/if] )
+         [c.name/]Elist.add(loop.toEntity());
+        entity.set[if (c.name.endsWith('s'))][c.name.first(0).toUpperCase()/]es[else][c.name.first(0).toUpperCase()/]s[/if]([c.name/]Elist)  
+        [/if]
+       
 [/for]
         return entity;
     }
