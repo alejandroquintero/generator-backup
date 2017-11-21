@@ -109,7 +109,9 @@ public abstract class CrudPersistence<T> {
      */
     public int count() {
         Query count = getEntityManager().createQuery("select count(u) from " + getEntityClass().getSimpleName() + " u");
-        return Integer.parseInt(count.getSingleResult().toString());
+        if(!count.getResultList().isEmpty())
+            return Integer.parseInt(count.getResultList().get(0).toString());
+        return 0;
     }
 
     /**
@@ -207,7 +209,9 @@ public abstract class CrudPersistence<T> {
      * @return Instance of V
      */
     public <V> V executeSingleNamedQuery(String name) {
-        return (V) getEntityManager().createNamedQuery(name).getSingleResult();
+         if(!getEntityManager().createNamedQuery(name).getResultList().isEmpty())
+            return (V) getEntityManager().createNamedQuery(name).getResultList().get(0);
+        return null;
     }
 
     /**
@@ -223,7 +227,9 @@ public abstract class CrudPersistence<T> {
         for (Map.Entry<String, Object> entry : params.entrySet()) {
             q.setParameter(entry.getKey(), entry.getValue());
         }
-        return (V) q.getSingleResult();
+         if(!q.getResultList().isEmpty())
+            return (V) q.getResultList().get(0);
+        return null;
     }
 
     /**

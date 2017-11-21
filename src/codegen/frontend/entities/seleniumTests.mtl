@@ -4,6 +4,7 @@
 
 [template public mainSeleniumTests(m : Model, path : String)]
 [let genPath : String = path.concat('tests/selenium/')]
+[if (m.valueOf('selenium')<>'headless')]
 [m.getLoginPage(genPath.concat('pages/'))/]
 [for (c : Class | m.getClasses())]
 [c.getCreatePage(genPath.concat('pages/'+c.getName()+'/'))/]
@@ -14,7 +15,13 @@
 [c.getIntegrationTests(genPath)/]
 [c.getCompositeIntegrationTests(genPath)/]
 [/for]
-
+[/if]
+[if (m.valueOf('selenium')='headless')]
+[for (c : Class | m.getClasses())]
+[c.getHeadlessCompositeIntegrationTests(genPath)/]
+[c.getHeadlessIntegrationTests(genPath)/]
+[/for]
+[/if]
 [/let]
 [/template]
 
@@ -667,6 +674,471 @@ public class [className/] {
         [c.getParentAttribute().getClass().name.toLowerCase()/]DeletePage.confirm();
     }
 
+}
+[/file]
+[/template]
+
+[template public getHeadlessCompositeIntegrationTests(c : Class, path : String)  ? (c.isChild()) {className : String = c.getTestName();}]
+[file (path.concat(className+'.java'), false, 'UTF-8')]
+/*
+composite
+[c.getModel().license()/]
+*/
+package [c.getModel().baseGroup()/].tests.selenium;
+
+import [c.getModel().baseGroup()/].dtos.minimum.[c.getMinimumDTOName()/];
+import [c.getModel().baseGroup()/].dtos.minimum.[c.getParentAttribute().getClass().getMinimumDTOName()/];
+import [c.getModel().baseGroup()/].resources.[c.name/]Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.drone.api.annotation.Drone;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.GenericArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import static org.jboss.arquillian.graphene.Graphene.waitGui;
+import static org.jboss.arquillian.graphene.Graphene.waitModel;
+import org.junit.After;
+
+
+@RunWith(Arquillian.class)
+public class [className/] {
+
+   @ArquillianResource
+    private URL deploymentURL;
+
+    @Drone
+    private WebDriver driver;
+
+    private static PodamFactory factory = new PodamFactoryImpl();
+
+    private static Properties prop;
+    private static InputStream input = null;
+    private static final String path = System.getenv("AUTH0_PROPERTIES");
+
+    static {
+        prop = new Properties();
+        try {
+            input = new FileInputStream(path);
+            prop.load(input);
+
+        } catch (FileNotFoundException ex) {
+            Logger.getAnonymousLogger().info("no se encontro archivo");
+        } catch (IOException ex) {
+            Logger.getAnonymousLogger().info("no se encontro archivo");
+        }
+    }
+
+    @Deployment(testable = false)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class)
+                // Se agrega las dependencias
+                .addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml")
+                        .importRuntimeDependencies().resolve()
+                        .withTransitivity().asFile())
+                // Se agregan los compilados de los paquetes de servicios
+                .addPackage([c.name/]Resource.class.getPackage())
+                 // archivo de propiedades para autenticacion de auth0
+                .addPackage("co.edu.uniandes.csw.auth.properties")
+                // El archivo que contiene la configuracion a la base de datos.
+                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+                // El archivo beans.xml es necesario para injeccion de dependencias.
+                .addAsWebInfResource(new File("src/main/webapp/WEB-INF/beans.xml"))
+                // El archivo web.xml es necesario para el despliegue de los servlets
+                .setWebXML(new File("src/main/webapp/WEB-INF/web.xml"))
+                .merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                        .importDirectory("src/main/webapp").as(GenericArchive.class), "/");
+    }
+
+    @Before
+    public void setup() throws InterruptedException {
+        try {
+            driver = new RemoteWebDriver(
+                    new URL("http://localhost:4445/wd/hub"), DesiredCapabilities.chrome()
+            );
+        } catch (MalformedURLException ex) {
+            Logger.getLogger([className/].class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
+
+   @After
+   public void unload() {
+        driver.quit();
+    }
+
+public void login() throws InterruptedException {
+        
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+        driver.get(deploymentURL.toExternalForm() + "#/login");
+        driver.manage().deleteAllCookies();
+        WebElement usernameInput = driver.findElement(By.id("username-input"));
+        WebElement passwordInput = driver.findElement(By.id("password-input"));
+        WebElement registerBtn = driver.findElement(By.id("log-in-btn"));
+        waitModel().until().element(usernameInput).is().visible();
+        usernameInput.clear();
+        passwordInput.clear();
+        usernameInput.sendKeys(prop.getProperty("username").trim());
+        passwordInput.sendKeys(prop.getProperty("password").trim());
+        registerBtn.click();
+    }
+
+public void create[c.getParentAttribute().getClass().name/]() throws InterruptedException {
+        login();
+        Logger.getAnonymousLogger().info("waiting");
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+        Integer expected = 0;
+        Integer count[c.getParentAttribute().getClass().name/]s = driver.findElements(By.cssSelector("tbody > tr")).size();
+        Assert.assertEquals(expected, count[c.getParentAttribute().getClass().name/]s);
+        WebElement createBtn = driver.findElement(By.id("create-[c.getParentAttribute().getClass().getName()/]"));
+        waitModel().until().element(createBtn).is().visible();
+        createBtn.click();
+        [c.getParentAttribute().getClass().getDTOName()/] expected_[c.getParentAttribute().getClass().getName()/] = factory.manufacturePojo([c.getParentAttribute().getClass().getDTOName()/].class);
+         [for ( p : Property | c.getParentAttribute().getClass().getAllAttributes())]
+         WebElement [p.name/]Input =driver.findElement(By.id([p.name/]))
+        [/for]
+ 		[for ( p : Property | c.getParentAttribute().getClass().getAllAttributes())]
+         [p.name/]Input.clear();
+         [p.name/]Input.sendKeys(expected_[c.getParentAttribute().getClass().getName()/].get[p.name.toUpperFirst()/]().toString())
+        [/for] 
+        saveBtn.click();
+}
+
+     public void delete[c.getParentAttribute().getClass().name/]() {
+        driver.navigate().to(deploymentURL.toExternalForm() + "#/[c.getParentAttribute().getClass().getName()/]s/list");
+        WebElement delete[c.getParentAttribute().getClass().name/]Btn = driver.findElement(By.id("0-delete-btn"));
+        waitGui().until().element(deletee[c.getParentAttribute().getClass().name/]Btn).is().visible();
+        deletee[c.getParentAttribute().getClass().name/]Btn.click();
+        WebElement confirme[c.getParentAttribute().getClass().name/]Del = driver.findElement(By.id("confirm-delete"));
+        waitGui().until().element(confirme[c.getParentAttribute().getClass().name/]Del).is().visible();
+        confirme[c.getParentAttribute().getClass().name/]Del.click();
+    }
+
+    @Test
+    @InSequence(0)
+    @RunAsClient
+    public void create[c.name/]() throws InterruptedException {
+    create[c.getParentAttribute().getClass().name/]();
+    driver.manage().timeouts().implicitlyWait(5, SECONDS);
+    Logger.getAnonymousLogger().info("waiting");
+PhotoAlbumDTO expected_[c.getName()/] = factory.manufacturePojo([c.getDTOName()/].class);
+        WebElement create[c.getName()/]Btn = driver.findElement(By.id("[c.getName()/]-[c.getParentAttribute().getClass().getName()/]"));
+        waitModel().until().element(create[c.getName()/]Btn).is().visible();
+        create[c.getName()/]Btn.click();
+        WebElement create[c.getName()/]Btn = driver.findElement(By.id("create-[c.getName()/]"));
+        waitModel().until().element(create[c.getName()/]Btn).is().visible();
+        create[c.getName()/]Btn.click();
+        [for ( p : Property | c.getAllAttributes())]
+         WebElement [p.name/]Input =driver.findElement(By.id([p.name/]))
+        [/for]
+        [for ( p : Property | c.getAllAttributes())]
+         [p.name/]Input.clear();
+         waitModel().until().element([p.name/]Input).is().visible();
+         [p.name/]Input.sendKeys(expected_[c.getName()/].get[p.name.toUpperFirst()/]().toString())
+        [/for] 
+         WebElement saveBtn = driver.findElement(By.id("save-[c.getName()/]"));
+        saveBtn.click();
+        WebElement nameDetail = driver.findElement(By.id("name-detail"));
+        waitGui().until().element(nameDetail).is().visible();
+        [c.getDTOName()/] actual_[c.getName()/] = new [c.getDTOName()/]();
+        actual_[c.getName()/].setName(nameDetail.getText());
+        Assert.assertEquals(expected_[c.getName()/].getName(), actual_[c.getName()/].getName());
+}
+
+ @Test
+    @InSequence(1)
+    @RunAsClient
+    public void edit[c.name/]() throws InterruptedException {
+        login();
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+        Logger.getAnonymousLogger().info("waiting");
+        [c.getDTOName()/] expected_[c.name/] = factory.manufacturePojo([c.getDTOName()/].class);
+
+        WebElement [c.getName()/]Detail = driver.findElement(By.id("0-detail-btn"));
+        waitGui().until().element([c.getName()/]Detail).is().visible();
+        [c.getName()/]Detail.click();
+        WebElement [c.getName()/]Photo = driver.findElement(By.id("[c.getName()/]-[c.getParentAttribute().getClass().getName()/]"));
+        waitGui().until().element([c.getName()/]Photo).is().visible();
+        [c.getName()/]Photo.click();
+
+        driver.get(deploymentURL.toExternalForm() + "#/[c.getParentAttribute().getClass().getName()/]s/1/details/[c.getName()/]/1/edit");
+        [for (p : Property | c.getAllAttributes())]
+        WebElement [p.name.toLowerCase()/]Input = driver.findElement(By.id("[p.name.toLowerCase()/]"));
+        waitModel().until().element([p.name.toLowerCase()/]Input).is().visible();
+        [p.name.toLowerCase()/]Input.clear();
+        [p.name.toLowerCase()/]Input.sendKeys(expected_[c.getName()/].get[p.name.toUpperFirst()/]);
+            
+[/for]
+        
+        WebElement saveBtn = driver.findElement(By.id("save-[c.getName()/]"));
+        waitModel().until().element(saveBtn).is().visible();
+        saveBtn.click();
+
+        WebElement nameDetail = driver.findElement(By.id("name-detail"));
+        waitGui().until().element(nameDetail).is().visible();
+        [c.getDTOName()/] actual_[c.getName()/] = new [c.getDTOName()/]();
+        actual_[c.getName()/].setName(nameDetail.getText());
+        Assert.assertEquals(expected_[c.getName()/].getName(), actual_[c.getName()/].getName());
+
+    }
+
+    @Test
+    @InSequence(2)
+    @RunAsClient
+    public void delete[c.name/]() throws InterruptedException {
+        login();
+        Logger.getAnonymousLogger().info("waiting");
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+
+        WebElement detailBtn = driver.findElement(By.id("0-detail-btn"));
+        waitGui().until().element(detailBtn).is().visible();
+        detailBtn.click();
+        WebElement [c.getName()/]List = driver.findElement(By.id("[c.getName()/]-[c.getParentAttribute().getClass().getName()/]"));
+        waitGui().until().element[c.getName()/]List).is().visible();
+        [c.getName()/]List.click();
+        driver.get(deploymentURL.toExternalForm() + "#/[c.getParentAttribute().getClass().getName()/]s/1/details/[c.getName()/]/1/delete");
+        WebElement confirmDel = driver.findElement(By.id("confirm-delete"));
+        waitGui().until().element(confirmDel).is().visible();
+        confirmDel.click();
+        Integer expected = 0;
+        Integer count[c.getParentAttribute().getClass().name/] = driver.findElements(By.cssSelector("tbody > tr")).size();
+        delete[c.getParentAttribute().getClass().name/]();
+        Assert.assertEquals(expected, count[c.getParentAttribute().getClass().name/]);
+    }
+}
+[/file]
+[/template]
+
+[template public getHeadlessIntegrationTests(c : Class, path : String)  ? (not c.isChild()) {className : String = c.getTestName();}]
+[file (path.concat(className+'.java'), false, 'UTF-8')]
+/*
+[c.getModel().license()/]
+*/
+package [c.getModel().baseGroup()/].tests.selenium;
+
+import [c.getModel().baseGroup()/].dtos.minimum.[c.getDTOName()/];
+import [c.getModel().baseGroup()/].resources.[c.name/]Resource;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Properties;
+import static java.util.concurrent.TimeUnit.SECONDS;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.jboss.arquillian.container.test.api.Deployment;
+import org.jboss.arquillian.drone.api.annotation.Drone;
+import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.junit.InSequence;
+import org.jboss.arquillian.test.api.ArquillianResource;
+import org.jboss.shrinkwrap.api.GenericArchive;
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.importer.ExplodedImporter;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+import org.jboss.shrinkwrap.resolver.api.maven.Maven;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.RemoteWebDriver;
+import uk.co.jemos.podam.api.PodamFactory;
+import uk.co.jemos.podam.api.PodamFactoryImpl;
+import org.jboss.arquillian.container.test.api.RunAsClient;
+import static org.jboss.arquillian.graphene.Graphene.waitGui;
+import static org.jboss.arquillian.graphene.Graphene.waitModel;
+import org.junit.After;
+
+@RunWith(Arquillian.class)
+public class [className/] {
+
+    @ArquillianResource
+    private URL deploymentURL;
+
+    @Drone
+    private WebDriver driver;
+
+    private static PodamFactory factory = new PodamFactoryImpl();
+
+    private static Properties prop;
+    private static InputStream input = null;
+    private static final String path = System.getenv("AUTH0_PROPERTIES");
+
+    static {
+        prop = new Properties();
+        try {
+            input = new FileInputStream(path);
+            prop.load(input);
+
+        } catch (FileNotFoundException ex) {
+            Logger.getAnonymousLogger().info("no se encontro archivo");
+        } catch (IOException ex) {
+            Logger.getAnonymousLogger().info("no se encontro archivo");
+        }
+
+    }
+
+    @Deployment(testable = true)
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class)
+                // Se agrega las dependencias
+                .addAsLibraries(Maven.resolver().loadPomFromFile("pom.xml")
+                        .importRuntimeDependencies().resolve()
+                        .withTransitivity().asFile())
+                // Se agregan los compilados de los paquetes de servicios
+                .addPackage([c.name/]Resource.class.getPackage())
+                // archivo de propiedades para autenticacion de auth0
+                .addPackage("co.edu.uniandes.csw.auth.properties")
+                // El archivo que contiene la configuracion a la base de datos.
+                .addAsResource("META-INF/persistence.xml", "META-INF/persistence.xml")
+                // El archivo beans.xml es necesario para injeccion de dependencias.
+                .addAsWebInfResource(new File("src/main/webapp/WEB-INF/beans.xml"))
+                // El archivo web.xml es necesario para el despliegue de los servlets
+                .setWebXML(new File("src/main/webapp/WEB-INF/web.xml"))
+                .merge(ShrinkWrap.create(GenericArchive.class).as(ExplodedImporter.class)
+                        .importDirectory("src/main/webapp").as(GenericArchive.class), "/");
+    }
+
+    @Before
+    public void setup() throws InterruptedException {
+        try {
+            driver = new RemoteWebDriver(
+                    new URL("http://localhost:4445/wd/hub"), DesiredCapabilities.chrome()
+            );
+        } catch (MalformedURLException ex) {
+            Logger.getLogger([c.name/]IT.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        login();
+    }
+
+    @After
+    public void unload() {
+
+        driver.quit();
+    }
+
+    public void login() throws InterruptedException {
+        Logger.getAnonymousLogger().info("waiting");
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+        //driver.manage().window().maximize();
+        driver.get(deploymentURL.toExternalForm() + "#/login");
+        driver.manage().deleteAllCookies();
+        WebElement usernameInput = driver.findElement(By.id("username-input"));
+        WebElement passwordInput = driver.findElement(By.id("password-input"));
+        WebElement registerBtn = driver.findElement(By.id("log-in-btn"));
+        waitModel().until().element(usernameInput).is().visible();
+        usernameInput.clear();
+        passwordInput.clear();
+        usernameInput.sendKeys(prop.getProperty("username").trim());
+        passwordInput.sendKeys(prop.getProperty("password").trim());
+        registerBtn.click();
+
+    }
+
+    @Test
+    @InSequence(0)
+    @RunAsClient
+    public void create[c.name/]() throws InterruptedException {
+        Logger.getAnonymousLogger().info("waiting");
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+        Integer expected = 0;
+        Integer count[c.name/]s = driver.findElements(By.cssSelector("tbody > tr")).size();
+        Assert.assertEquals(expected, count[c.name/]s);
+        WebElement createBtn = driver.findElement(By.id("create-[c.getName()/]"));
+        waitModel().until().element(createBtn).is().visible();
+        createBtn.click();
+        [c.getDTOName()/] expected_[c.getName()/] = factory.manufacturePojo([c.getDTOName()/].class);
+        [for (p : Property | c.getAllAttributes())]
+        WebElement [p.name.toLowerCase()/]Input = driver.findElement(By.id("[p.name.toLowerCase()/]"));
+        [p.name.toLowerCase()/]Input.clear();
+        [c.getName()/]Input.sendKeys(expected_expected_[c.getName()/].getName());
+        [c.getName()/]Input.sendKeys(expected_[c.getName()/].get[p.name.toUpperFirst()/]().toString());
+[/for]
+        
+        WebElement saveBtn = driver.findElement(By.id("save-[c.getName()/]"));
+
+        saveBtn.click();
+        WebElement nameDetail = driver.findElement(By.id("name-detail"));
+        waitGui().until().element(nameDetail).is().visible();
+        [c.getDTOName()/] actual_[c.getName()/] = new [c.getDTOName()/]();
+        actual_[c.getName()/].setName(nameDetail.getText());
+        Assert.assertEquals(expected_[c.getName()/].getName(), actual_[c.getName()/].getName());
+    }
+
+    @Test
+    @InSequence(1)
+    @RunAsClient
+    public void edit[c.name/]() throws InterruptedException {
+        Logger.getAnonymousLogger().info("waiting");
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+        BicycleDTO expected_[c.getName()/] = factory.manufacturePojo([c.getDTOName()/].class);
+        WebElement editBtn = driver.findElement(By.id("0-edit-btn"));
+        waitGui().until().element(editBtn).is().visible();
+        editBtn.click();
+        [for (p : Property | c.getAllAttributes())]
+        WebElement [p.name.toLowerCase()/]Input = driver.findElement(By.id("[p.name.toLowerCase()/]"));
+        [p.name.toLowerCase()/]Input.clear();
+        [p.name.toLowerCase()/]Input.sendKeys(expected_[c.getName()/].get[p.name.toUpperFirst()/]());
+        [/for]
+        
+        WebElement saveBtn = driver.findElement(By.id("save-[c.getName()/]"));
+        saveBtn.click();
+        WebElement nameDetail = driver.findElement(By.id("name-detail"));
+        waitGui().until().element(nameDetail).is().visible();
+        [c.getDTOName()/] actual_[c.getName()/] = new [c.getDTOName()/]();
+        actual_[c.getName()/].setName(nameDetail.getText());
+        Assert.assertEquals(expected_[c.getName()/].getName(), actual_[c.getName()/].getName());
+    }
+
+    @Test
+    @InSequence(2)
+    @RunAsClient
+    public void deleteProduct() throws InterruptedException {
+
+        Logger.getAnonymousLogger().info("waiting");
+        driver.manage().timeouts().implicitlyWait(5, SECONDS);
+        WebElement deleteBtn = driver.findElement(By.id("0-delete-btn"));
+        waitGui().until().element(deleteBtn).is().visible();
+        deleteBtn.click();
+        WebElement confirmDel = driver.findElement(By.id("confirm-delete"));
+        waitGui().until().element(confirmDel).is().visible();
+        confirmDel.click();
+        Integer expected = 0;
+        Integer count[c.name/]s = driver.findElements(By.cssSelector("tbody > tr")).size();
+        Assert.assertEquals(expected, count[c.name/]s);
+    }
 }
 [/file]
 [/template]

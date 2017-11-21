@@ -5,7 +5,6 @@
 [template public mainPostmanCollections(m : Model)]
 [m.genPostmanEnvironment(m.getApiArtifactId().concat('/collections/'))/]
 [for (c : Class | m.getClasses())]
-[c.genCollectionRunner(m.getApiArtifactId().concat('/collections/runners/'))/]
 [if not c.isChild() ]
 [c.genPostmanCollections(m.getApiArtifactId().concat('/collections/'))/]
 [/if]
@@ -443,14 +442,6 @@
 [/template]
 
 
-
-
-[template protected genCollectionRunner(c :Class,path:String)]
-[file(path.concat(c.getURI()+'CollectionRunner.bat'),false,'UTF-8')]
-"postman runner"
-
-[/file]
-[/template]
 
 
 

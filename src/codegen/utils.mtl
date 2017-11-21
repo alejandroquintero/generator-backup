@@ -277,7 +277,9 @@ endif
 [template public getAPIName(c : Class)]
 ['I'.concat(c.name).concat('Logic')/]
 [/template]
-
+[template public getPostmanCollectionName(c : Class)]
+['postman_collection'.concat(c.name.toUpperFirst())/]
+[/template]
 [template public getEntityName(c : Class)]
 [c.name.concat('Entity')/]
 [/template]

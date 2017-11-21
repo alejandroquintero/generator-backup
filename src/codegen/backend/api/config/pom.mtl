@@ -72,6 +72,11 @@
     </dependencyManagement>
     <dependencies>
         <dependency>
+            <groupId>co.edu.uniandes.csw</groupId>
+            <artifactId>postman</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
    <groupId>javax</groupId>
    <artifactId>javaee-web-api</artifactId>
    <version>7.0</version>
@@ -159,7 +164,7 @@
         </dependency>
         <dependency>
             <groupId>[m.getCSWGroupId()/]</groupId>
-            <artifactId>auth0_utils</artifactId>
+            <artifactId>auth0-utils</artifactId>
             <version>1.0</version>
         </dependency>
     </dependencies>
