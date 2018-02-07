@@ -6,9 +6,23 @@
 [import backend::config::docs /]
 [import ::utils /]
 [template public generate(m : Model)]
+[comment @main 
+Modulos a generar:
+all
+front
+rest_back
+rest_mock
+doc_rest
+/]
+[if (m.valueOf('generate')='all' or m.valueOf('generate')='rest_back' or m.valueOf('generate')=null)]
 
 
 [m.genServices(m.getApiArtifactId())/]
+[for (c : Class | m.getClasses())]
+    [c.genLogic(m.getLogicArtifactId())/]
+[/for]
+[/if]
 
+[m.mainDocs()/]
 
 [/template]
