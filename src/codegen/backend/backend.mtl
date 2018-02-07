@@ -1,9 +1,9 @@
 [comment encoding = UTF-8 /]
 [module backend('http://www.eclipse.org/uml2/5.0.0/UML')]
-[import backend::config /]
+ 
 [import backend::api::main /]
 
-[import backend::config::docs /]
+ 
 [import ::utils /]
 [template public generate(m : Model)]
 [comment @main 
@@ -21,6 +21,6 @@ doc_rest
 
 [/if]
 
-[m.mainDocs()/]
+ 
 
 [/template]
