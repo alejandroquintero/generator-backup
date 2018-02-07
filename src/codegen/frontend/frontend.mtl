@@ -1,6 +1,6 @@
 [comment encoding = UTF-8 /]
 [module frontend('http://www.eclipse.org/uml2/5.0.0/UML')]
-[import frontend::common /]
+ 
 
 [import ::utils /]
 
@@ -14,8 +14,7 @@ rest_mock
 doc_rest
 /]
 
-    [m.genDevEnv(m.getWebArtifactId().concat('/'))/]
-	[m.genCommon(m.getWebRoot())/]
+  
   
    
     [comment[m.mainE2E(m.getWebArtifactId().concat('/e2e/'))/]
