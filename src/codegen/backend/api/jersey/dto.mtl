@@ -60,26 +60,7 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
     public [className/]() {
     }
 
-    /**
-     * Crea un objeto [className/] a partir de un objeto [c.getEntityName()/].
-     *
-     * @param entity Entidad [c.getEntityName()/] desde la cual se va a crear el nuevo objeto.
-     * @generated
-     */
-    public [className/]([c.getEntityName()/] entity) {
-	   if (entity!=null){
-    [if(c.isGeneralization())]
-    [for(a : Property | c.getGeneralizationClass().allAttributes())]
-        [if (a.existAttribute(c)=false)]
-        this.[a.name/]=entity.[a.getter()/]();
-        [/if]
-    [/for]
-    [/if]
-    [for(a : Property | c.allAttributes())]
-        this.[a.name/]=entity.[a.getter()/]();
-	[/for]
-       }
-    }
+  
 
 [for (a : Property | c.allAttributes())]
     /**
@@ -168,22 +149,7 @@ public class [className/] extends [c.getMinimumDTOName()/]{
         super();
     }
 
-    /**
-     * Crea un objeto [className/] a partir de un objeto [c.getEntityName()/] incluyendo los atributos de [c.getMinimumDTOName()/].
-     *
-     * @param entity Entidad [c.getEntityName()/] desde la cual se va a crear el nuevo objeto.
-     * @generated
-     */
-    public [className/]([c.getEntityName()/] entity) {
-        super(entity);
-        [for (a : Property | c.getReferences(true))]
-        if (entity.[a.getter()/]()!=null){
-        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
-        }
-        [/for]
-        
-    }
-
+  
   
 [for (a : Property | c.getReferences(true))]
     /**
