@@ -3,7 +3,6 @@
 [import ::utils /]
 [import backend::config::pom /]
 [import backend::config::persistence /]
-[import backend::config::tests /]
 [import backend::config::exceptions /]
 [import backend::config::devenv /]
 
@@ -13,5 +12,5 @@
 [m.mainPOM()/]
 [m.mainXML()/]
 [m.mainExceptions(m.getLogicArtifactId())/]
-[m.mainTests(m.getTestMetaInfPath())/]
+
 [/template]
