@@ -2,11 +2,10 @@
 [module logic('http://www.eclipse.org/uml2/5.0.0/UML')]
 [import ::utils /]
 [import backend::logic::logic /]
-[import backend::logic::tests /]
 [import backend::logic::crudutils]
 [import backend::persistence::entities /]
 [import backend::persistence::persistence /]
-[import backend::persistence::tests /]
+
 
 [template public genLogic(c : Class, path : String)]
 [let base : String = path.concat(c.getModel().basePath())]
@@ -15,8 +14,5 @@
     [c.mainEntity(base)/]
     [c.mainPersistence(base)/]
 [/let]
-[let baseTests : String = path.concat(c.getModel().baseTestPath())]
-    [c.mainTests(baseTests)/]
-    [c.mainDataTests(baseTests)/]
-[/let]
+
 [/template]
