@@ -4,8 +4,6 @@
 
 [import backend::api::jersey::dto /]
 
-[import backend::api::config::xml /]
-[import backend::api::config::pom /]
 [import backend::api::config::packageInfo /]
 
 
