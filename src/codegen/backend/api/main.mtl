@@ -1,24 +1,18 @@
 [comment encoding = UTF-8 /]
 [module main('http://www.eclipse.org/uml2/5.0.0/UML')/]
 [import ::utils /]
-[import backend::api::jersey::services /]
-[import backend::api::jersey::tests /]
+
 [import backend::api::jersey::dto /]
 
 [import backend::api::config::xml /]
 [import backend::api::config::pom /]
-[import backend::api::config::jerseyapp /]
 [import backend::api::config::packageInfo /]
-[import backend::api::config::tests /]
-[import backend::api::config::properties/]
+
 
 
 [template public genServices(m : Model, path : String)]
-[m.mainPOM()/]
-[m.mainJerseyApp(path.concat(m.basePath()))/]
 
-[m.mainTests()/]
-[m.mainProperties()/]
+
 
 [let project : String = path.concat(m.basePath())]
         [m.mainPackageinfo(project)/]
