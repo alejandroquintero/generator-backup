@@ -4,17 +4,9 @@
 
 [import backend::api::jersey::dto /]
 
-[import backend::api::config::packageInfo /]
-
-
-
 [template public genServices(m : Model, path : String)]
 
 
-
-[let project : String = path.concat(m.basePath())]
-        [m.mainPackageinfo(project)/]
-[/let]
 
 [for (c : Class | m.getClasses())]
     [let project : String = path.concat(c.getModel().basePath())]
