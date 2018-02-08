@@ -26,7 +26,11 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 
 [if(c.isGeneralization())]
 [for(a : Property | c.getGeneralizationClass().allAttributes())]
-padre [a.name/] hijo [c.name/]
+padre [a.name/] 
+[for (a : Property | c.allAttributes())]
+[a.name/]
+[/for]
+
     [if (a.existAttribute(c)=false)]
     
     private [a.type.name/] [a.name/];
@@ -120,3 +124,4 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [query public existAttribute(a : Property, cl : Class) : Boolean = 
 cl.allAttributes()->select(a1 | a1.name=a.name)->notEmpty()
 /]
+
