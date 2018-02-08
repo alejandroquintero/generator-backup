@@ -27,7 +27,9 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 [if(c.isGeneralization())]
 [for(a : Property | c.getGeneralizationClass().allAttributes())]
 padre [a.name/] 
+
 [for (a : Property | c.allAttributes())]
+hijo
 [a.name/]
 [/for]
 
