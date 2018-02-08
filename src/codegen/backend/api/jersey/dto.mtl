@@ -28,12 +28,8 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 [for(a : Property | c.getGeneralizationClass().allAttributes())]
 padre [a.name/] 
 
-[for (a : Property | c.allAttributes())]
-hijo
-[a.name/]
-[/for]
 
-    [if (a.existAttribute(c)=false)]
+    [if (not a.existAttribute(c))]
     
     private [a.type.name/] [a.name/];
     [/if]
@@ -64,7 +60,7 @@ hijo
 [/if]
 [if(c.isGeneralization())]
     [for(a : Property | c.getGeneralizationClass().allAttributes())]
-        [if (a.existAttribute(c)=false)]
+        [if (not a.existAttribute(c))]
   
     public [a.type.name/] [a.getter()/]() {
         return [a.name/];
