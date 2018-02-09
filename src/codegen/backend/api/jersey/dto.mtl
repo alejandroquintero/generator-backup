@@ -133,6 +133,6 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 cl.allAttributes()->select(a1 | a1.name=a.name)->notEmpty()
 /]
 [query public excludeAttributes(c : Class, cl : Class) : Sequence(Property) = 
-cl.allAttributes()->excluding(c.allAttributes())->asSequence()
+c.allAttributes()->excluding(cl.allAttributes())->asSequence()
 
 /]
