@@ -93,6 +93,7 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 ========
 [a.name/] name
 [a.getUpper()/] upper
+[a.isComposite/] is composite
 [a.isNavigable()/] is navigable
 [a.isMany2One()/] is many to one
 [a.isOne2Many()/] is one to many
