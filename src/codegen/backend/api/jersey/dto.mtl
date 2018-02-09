@@ -28,6 +28,7 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 [if(c.isGeneralization())]
 [for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
 [p.name/]
+==========
 [/for]
 [for (b : Property | c.allAttributes())]
 [b.name/]
