@@ -10,7 +10,7 @@
 [/template]
 
 [template protected genMinimumDTO(c : Class, path: String) {className : String = c.getMinimumDTOName();}]
-[file (path.concat(className+'.java'), false, 'UTF-8')]
+[file (path.concat(c.name+'.java'), false, 'UTF-8')]
 /*
 [c.getModel().license()/]
 */
