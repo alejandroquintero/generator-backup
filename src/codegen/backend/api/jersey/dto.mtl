@@ -76,8 +76,12 @@ private [p.type.name/] [p.name/];
 [c.getModel().license()/]
 */
 package [c.getModel().baseGroup()/].dtos.detail;
+[for (a : Property | c.getRelationshipAttributes())]
+[if (a.isOne2Many())]
 import java.util.List;
 import java.util.ArrayList;
+[/if]
+[/for]
 import [c.getModel().baseGroup()/].dtos.minimum.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -92,6 +96,10 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [/if]
 
 [if (a.isMany2One())]
+ private [a.getClass().getMinimumDTOName()/] [a.getClass().name.toLower()/];
+[/if]
+
+[if (a.isOne2One())]
  private [a.getClass().getMinimumDTOName()/] [a.getClass().name.toLower()/];
 [/if]
 [/for]
@@ -111,6 +119,15 @@ public [className/]() {
     }
 [/if]
 [if (a.isMany2One())]
+    public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
+        return [a.getClass().name.toLower()/];
+    }
+ 
+    public void [a.setter()/]([a.getClass().getMinimumDTOName()/] [a.getClass().name.toLower()/]) {
+        this.[a.getClass().name.toLower()/] = [a.getClass().name.toLower()/];
+    }
+[/if]
+[if (a.isOne2One())]
     public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
         return [a.getClass().name.toLower()/];
     }
