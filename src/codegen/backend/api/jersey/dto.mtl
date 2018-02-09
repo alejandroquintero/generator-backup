@@ -86,17 +86,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class [className/] extends [c.getMinimumDTOName()/]{
 
 [for (a : Property | c.getRelationshipAttributes())] 
-========
-[a.name/] name
-[a.isMany2One()/] is many to one
-[a.isOne2Many()/] is one to many
-[a.isMany2Many()/] is many to many
-[a.isOne2One()/] is one to one
-[a.getOtherEnd().aggregation/] other end aggregation
-
-========= 
-
-
 
 [if (a.isOne2Many())]
  private List<[a.getClass().getMinimumDTOName()/]> [a.getClass().name/]s = new ArrayList<>();
@@ -114,8 +103,7 @@ public [className/]() {
     public List<[a.getClass().getMinimumDTOName()/]> [a.getter()/]() {
         return [a.getClass().name/]s;
     }
-
-  
+ 
     public void [a.setter()/](List<[a.getClass().getMinimumDTOName()/]> [a.getClass().name.toLower()/]s) {
         this.[a.getClass().name/]s = [a.getClass().name.toLower()/]s;
     }
@@ -124,8 +112,7 @@ public [className/]() {
     public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
         return [a.getClass().name/];
     }
-
-  
+ 
     public void [a.setter()/]([a.getClass().getMinimumDTOName()/] [a.getClass().name.toLower()/]) {
         this.[a.getClass().name/] = [a.getClass().name.toLower()/];
     }
