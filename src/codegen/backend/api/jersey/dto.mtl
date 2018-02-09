@@ -85,7 +85,10 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class [className/] extends [c.getMinimumDTOName()/]{
 
 
-[for (a : Property | c.getRelationshipAttributes())]   
+[for (a : Property | c.getRelationshipAttributes())] 
+========
+[a.name/]
+=========  
 [if (a.getUpper() = 1)]
     [if (not a.isComposite())][/if]
     private [a.getClass().getMinimumDTOName()/] [a.name/];
