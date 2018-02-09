@@ -99,6 +99,7 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [a.isOne2Many()/] is one to many
 [a.isMany2Many()/] is many to many
 [a.isOne2One()/] is one to one
+[a.getOtherEnd()/] other end name 
 
 ========= 
 
