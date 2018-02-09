@@ -94,11 +94,11 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [if (a.isMany2One())]
  private [a.getClass().getMinimumDTOName()/] [a.getClass().name/];
 [/if]
-
+[/for]
 public [className/]() {
         super();
     }
-
+[for (a : Property | c.getRelationshipAttributes())] 
 [if (a.isOne2Many())]
     public List<[a.getClass().getMinimumDTOName()/]> [a.getter()/]() {
         return [a.getClass().name/]s;
