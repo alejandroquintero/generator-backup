@@ -22,7 +22,7 @@ import java.util.Date;
 
 
 @XmlRootElement
-public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
+public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
 
 
 
