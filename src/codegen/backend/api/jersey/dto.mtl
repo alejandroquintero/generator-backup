@@ -84,19 +84,16 @@ import javax.xml.bind.annotation.XmlRootElement;
 @XmlRootElement
 public class [className/] extends [c.getMinimumDTOName()/]{
 
-[for (a : Property | c.getCompositeCollectionAttributes())] 
-[a.name/]
-[/for]
-=============
-[for (a : Property | c.getNonCompositeCollectionAttributes())] 
-[a.name/]
-[/for]
 
-========
 [for (a : Property | c.getRelationshipAttributes())] 
 ========
-[a.name/]
-[a.getUpper()/]
+[a.name/] name
+[a.getUpper()/] upper
+[a.isNavigable()/] is navigable
+[a.isMany2One()/] is many to one
+[a.isOne2Many()/] is one to many
+[a.isMany2Many()/] is many to many
+[a.isOne2One()/] is one to one
 ========= 
 
 [if (a.getUpper() = 1)]
