@@ -26,13 +26,12 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 
 
 [if(c.isGeneralization())]
-[for(d : Property | c.excludeAttributes(c.getGeneralizationClass()))]
-[d.name/]
-
-==========
+[for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
+[p.name/]
 [/for]
 [for (b : Property | c.allAttributes())]
 [b.name/]
+
 [/for]
 [for(a : Property | c.getGeneralizationClass().allAttributes())]
 
@@ -132,7 +131,7 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 
 cl.allAttributes()->select(a1 | a1.name=a.name)->notEmpty()
 /]
-[query public excludeAttributes(c : Class, cl : Class) : Sequence(Property) = 
-c.allAttributes()->asSequence()->excludesAll(cl.allAttributes()->asSet())->asSequence()
+[query public excludeAttributes(c : Class , cl : Class) : Set(Property) = 
+c.allAttributes() - cl.allAttributes()
 
 /]
