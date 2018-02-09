@@ -26,11 +26,11 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 
 [if(c.isGeneralization())]
 [for(a : Property | c.getGeneralizationClass().allAttributes())]
-padre [a.name/] 
 
 
-    [if (not a.existAttribute(c))]
-    
+[a.existAttribute(c)/]
+    [if (a.existAttribute(c)=false)]
+      
     private [a.type.name/] [a.name/];
     [/if]
 [/for]
