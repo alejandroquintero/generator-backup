@@ -5,7 +5,7 @@
 [template public mainDTOs(c : Class, path : String)]
 [let dtoPath : String = path.concat('dtos/')]
     [c.genMinimumDTO(dtoPath)/]
-    [c.genBasicDTO(dtoPath)/]
+    
 [/let]
 [/template]
 
@@ -25,70 +25,9 @@ import java.util.Date;
 public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
 
 
-[if(c.isGeneralization())]
-[for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
-private [p.type.name/] [p.name/];
-[/for]
-[/if]
-
-[if(not c.isGeneralization())]
-[for(a : Property | c.allAttributes())]
-   
-    private [a.type.name/] [a.name/];
-[/for]
- [/if]
-
-    public [className/]() {
-    }
-[if(not c.isGeneralization())]
-[for (a : Property | c.allAttributes())]
-    
-    public [a.type.name/] [a.getter()/]() {
-        return [a.name/];
-    }
-  
-    public void [a.setter()/]([a.type.name/] [a.name.toLower()/]) {
-        this.[a.name/] = [a.name.toLower()/];
-    }
-
-[/for]
-[/if]
-[if(c.isGeneralization())]
-    [for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
-          
-    public [p.type.name/] [p.getter()/]() {
-        return [p.name/];
-    }
-
-    public void [p.setter()/]([p.type.name/] [p.name.toLower()/]) {
-        this.[p.name/] = [p.name.toLower()/];
-    }
-        
-    [/for]
-[/if]
-}
-[/file]
-[/template]
-
-[template protected genBasicDTO(c : Class, path: String) {className : String = c.getBasicDTOName();}]
-[file (path.concat(className+'.java'), false, 'UTF-8')]
-/*
-[c.getModel().license()/]
-*/
-package [c.getModel().baseGroup()/].dtos.detail;
-[for (a : Property | c.getRelationshipAttributes())]
-[if (a.isOne2Many())]
-import java.util.List;
-import java.util.ArrayList;
-[/if]
-[/for]
-import [c.getModel().baseGroup()/].dtos.minimum.*;
-import javax.xml.bind.annotation.XmlRootElement;
 
 
-@XmlRootElement
-public class [className/] extends [c.getMinimumDTOName()/]{
-
+[if(c.name.contains('DetailDTO'))]
 [for (a : Property | c.getRelationshipAttributes())] 
 
 [if (a.isOne2Many())]
@@ -137,9 +76,60 @@ public [className/]() {
     }
 [/if]
 [/for]
+[/if]
+[if(not c.name.contains('DetailDTO'))]
+[if(c.isGeneralization())]
+[for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
+private [p.type.name/] [p.name/];
+[/for]
+[/if]
+
+[if(not c.isGeneralization())]
+[for(a : Property | c.allAttributes())]
+   
+    private [a.type.name/] [a.name/];
+[/for]
+ [/if]
+[if(not c.isGeneralization())]
+    public [className/]() {
+    }
+[/if]
+[if(c.isGeneralization())]
+    public [className/]() {
+      super();
+    }
+[/if]
+[if(not c.isGeneralization())]
+[for (a : Property | c.allAttributes())]
+    
+    public [a.type.name/] [a.getter()/]() {
+        return [a.name/];
+    }
+  
+    public void [a.setter()/]([a.type.name/] [a.name.toLower()/]) {
+        this.[a.name/] = [a.name.toLower()/];
+    }
+
+[/for]
+[/if]
+[if(c.isGeneralization())]
+    [for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
+          
+    public [p.type.name/] [p.getter()/]() {
+        return [p.name/];
+    }
+
+    public void [p.setter()/]([p.type.name/] [p.name.toLower()/]) {
+        this.[p.name/] = [p.name.toLower()/];
+    }
+        
+    [/for]
+[/if]
+[/if]
 }
 [/file]
 [/template]
+
 
 [query public existAttribute(a : Property, cl : Class) : Boolean = 
 
