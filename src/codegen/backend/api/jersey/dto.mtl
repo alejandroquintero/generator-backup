@@ -27,23 +27,10 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 
 [if(c.isGeneralization())]
 [for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
-[p.name/]
-==========
-[/for]
-[for (b : Property | c.allAttributes())]
-[b.name/]
-
-[/for]
-[for(a : Property | c.getGeneralizationClass().allAttributes())]
-
-[a.name/]
-[a.existAttribute(c)/]
-    [if (a.existAttribute(c)=false)]
-      
-    private [a.type.name/] [a.name/];
-    [/if]
+private [p.type.name/] [p.name/];
 [/for]
 [/if]
+
 [if(not c.isGeneralization())]
 [for(a : Property | c.allAttributes())]
    
@@ -59,8 +46,7 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
     public [a.type.name/] [a.getter()/]() {
         return [a.name/];
     }
-
-   
+  
     public void [a.setter()/]([a.type.name/] [a.name.toLower()/]) {
         this.[a.name/] = [a.name.toLower()/];
     }
@@ -68,18 +54,16 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 [/for]
 [/if]
 [if(c.isGeneralization())]
-    [for(a : Property | c.getGeneralizationClass().allAttributes())]
-        [if (not a.existAttribute(c))]
-  
-    public [a.type.name/] [a.getter()/]() {
-        return [a.name/];
+    [for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
+          
+    public [p.type.name/] [p.getter()/]() {
+        return [p.name/];
     }
 
-   
-    public void [a.setter()/]([a.type.name/] [a.name.toLower()/]) {
-        this.[a.name/] = [a.name.toLower()/];
+    public void [p.setter()/]([p.type.name/] [p.name.toLower()/]) {
+        this.[p.name/] = [p.name.toLower()/];
     }
-        [/if]
+        
     [/for]
 [/if]
 }
