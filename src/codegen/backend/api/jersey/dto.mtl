@@ -76,25 +76,18 @@ private [p.type.name/] [p.name/];
 [c.getModel().license()/]
 */
 package [c.getModel().baseGroup()/].dtos.detail;
-
+import java.util.List;
+import java.util.ArrayList;
 import [c.getModel().baseGroup()/].dtos.minimum.*;
 import javax.xml.bind.annotation.XmlRootElement;
 
 
 @XmlRootElement
 public class [className/] extends [c.getMinimumDTOName()/]{
-=============
-[for (a : Property | c.getReferences(true))] 
-[a.name/] name
-[a.isComposite/] is composite
-[/for]
-=============
+
 [for (a : Property | c.getRelationshipAttributes())] 
 ========
 [a.name/] name
-[a.getUpper()/] upper
-[a.isComposite/] is composite
-[a.isNavigable()/] is navigable
 [a.isMany2One()/] is many to one
 [a.isOne2Many()/] is one to many
 [a.isMany2Many()/] is many to many
@@ -103,29 +96,39 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 
 ========= 
 
-[if (a.getUpper() = 1)]
-    [if (not a.isComposite())][/if]
-    private [a.getClass().getMinimumDTOName()/] [a.name/];
-[/if]
-[/for]
-
-    public [className/]() {
+public [className/]() {
         super();
     }
 
-[for (a : Property | c.getReferences(true))]
-=============
-  [a.name/]
-==============
-    public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
-        return [a.name/];
+[if (a.isOne2Many())]
+ private List<[a.getOtherEnd().getClass().getMinimumDTOName()/]> [a.getOtherEnd().getClass().name/]s = new ArrayList<>();
+[/if]
+
+[if (a.isMany2One())]
+ private [a.getOtherEnd().getClass().getMinimumDTOName()/] [a.getOtherEnd().getClass().name/];
+[/if]
+
+
+[if (a.isOne2Many())]
+    public List<[a.getOtherEnd().getClass().getMinimumDTOName()/]> [a.getOtherEnd().getter()/]() {
+        return [a.getOtherEnd().getClass().name/]s;
     }
 
   
-    public void [a.setter()/]([a.getClass().getMinimumDTOName()/] [a.name.toLower()/]) {
-        this.[a.name/] = [a.name.toLower()/];
+    public void [a.getOtherEnd().setter()/](List<[a.getOtherEnd().getClass().getMinimumDTOName()/]> [a.getOtherEnd().getClass().name.toLower()/]s) {
+        this.[a.getOtherEnd().getClass().name/]s = [a.getOtherEnd().getClass().name.toLower()/]s;
+    }
+[/if]
+[if (a.isMany2One())]
+    public [a.getOtherEnd().getClass().getMinimumDTOName()/] [a.getOtherEnd().getter()/]() {
+        return [a.getOtherEnd().getClass().name/];
     }
 
+  
+    public void [a.getOtherEnd().setter()/]([a.getOtherEnd().getClass().getMinimumDTOName()/] [a.getOtherEnd().getClass().name.toLower()/]) {
+        this.[a.getOtherEnd().getClass().name/] = [a.getOtherEnd().getClass().name.toLower()/];
+    }
+[/if]
 [/for]
 }
 [/file]
