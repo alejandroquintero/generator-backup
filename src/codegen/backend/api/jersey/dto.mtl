@@ -24,6 +24,9 @@ import java.util.Date;
 @XmlRootElement
 public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
 
+[for(b: Property | c.allAttributes())]
+[b.existAttribute(c.getGeneralizationClass())/]
+[/for]
 [if(c.isGeneralization())]
 [for(a : Property | c.getGeneralizationClass().allAttributes())]
 
