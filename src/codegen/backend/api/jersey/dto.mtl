@@ -11,7 +11,7 @@
 
 [template protected genMinimumDTO(c : Class, path: String) {className : String = c.getMinimumDTOName();}]
 
-[file (path.concat(c.assigName().replace('_','')+'.java'), false, 'UTF-8')]
+[file (path.concat(c.assigName()+'.java'), false, 'UTF-8')]
 
 /*
 [c.getModel().license()/]
@@ -131,11 +131,11 @@ private [p.type.name/] [p.name/];
 }
 [/file]
 [/template]
-[template private assigName(c : Class){className : String = c.getMinimumDTOName();}]
-[if(c.name.contains('DetailDTO'))]
-[c.name/]
+[template private assigName(a : Class){cl : String = a.getMinimumDTOName();}]
+[if(a.name.contains('DetailDTO'))]
+[a.name/]
 [else]
-[className/]
+[cl/]
 [/if]
 [/template]
 
