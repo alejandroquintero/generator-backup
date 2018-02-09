@@ -83,8 +83,12 @@ import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
 public class [className/] extends [c.getMinimumDTOName()/]{
-
-
+=============
+[for (a : Property | c.getReferences(true))] 
+[a.name/] name
+[a.isComposite/] is composite
+[/for]
+=============
 [for (a : Property | c.getRelationshipAttributes())] 
 ========
 [a.name/] name
@@ -94,6 +98,7 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [a.isOne2Many()/] is one to many
 [a.isMany2Many()/] is many to many
 [a.isOne2One()/] is one to one
+
 ========= 
 
 [if (a.getUpper() = 1)]
