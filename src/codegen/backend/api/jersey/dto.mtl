@@ -11,7 +11,7 @@
 
 [template protected genMinimumDTO(c : Class, path: String) {className : String = c.getMinimumDTOName();}]
 
-[file (path.concat(c.assigName()+'.java'), false, 'UTF-8')]
+[file (path.concat(c.assigName().replace('_','')+'.java'), false, 'UTF-8')]
 
 /*
 [c.getModel().license()/]
