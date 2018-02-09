@@ -60,13 +60,15 @@ public [c.name/]() {
     }
 [/if]
 [if (a.isMany2One())]
-    public [a.getClass().name/] [a.getter()/]() {
+    
+public [a.getClass().name/] [a.getter()/]() {
         return [a.getClass().name.toLower()/];
     }
  
     public void [a.setter()/]([a.getClass().name/] [a.getClass().name.toLower()/]) {
         this.[a.getClass().name.toLower()/] = [a.getClass().name.toLower()/];
     }
+
 [/if]
 [if (a.isOne2One())]
     public [a.getClass().name/] [a.getter()/]() {
@@ -76,6 +78,7 @@ public [c.name/]() {
     public void [a.setter()/]([a.getClass().name/] [a.getClass().name.toLower()/]) {
         this.[a.getClass().name.toLower()/] = [a.getClass().name.toLower()/];
     }
+
 [/if]
 [/for]
 [/if]
@@ -90,16 +93,21 @@ private [p.type.name/] [p.name/];
 [for(a : Property | c.allAttributes())]
    
     private [a.type.name/] [a.name/];
+
 [/for]
  [/if]
+
 [if(not c.isGeneralization())]
     public [c.name/]() {
     }
+
 [/if]
 [if(c.isGeneralization())]
+
     public [c.name/]() {
       super();
     }
+
 [/if]
 [if(not c.isGeneralization())]
 [for (a : Property | c.allAttributes())]
