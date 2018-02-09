@@ -10,7 +10,9 @@
 [/template]
 
 [template protected genMinimumDTO(c : Class, path: String) {className : String = c.getMinimumDTOName();}]
-[file (path.concat(c.name+'.java'), false, 'UTF-8')]
+
+[file (path.concat(c.assigName()+'.java'), false, 'UTF-8')]
+
 /*
 [c.getModel().license()/]
 */
@@ -22,7 +24,7 @@ import java.util.Date;
 
 
 @XmlRootElement
-public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
+public class [if(c.name.contains('DetailDTO'))][c.name/][else][className/][/if] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
 
 
 
@@ -43,7 +45,7 @@ public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationCl
 [/if]
 [/for]
 
-public [className/]() {
+public [if(c.name.contains('DetailDTO'))][c.name/][else][className/][/if]() {
         super();
     }
 
@@ -129,7 +131,13 @@ private [p.type.name/] [p.name/];
 }
 [/file]
 [/template]
-
+[template private assigName(c : Class){className : String = c.getMinimumDTOName();}]
+[if(c.name.contains('DetailDTO'))]
+[c.name/]
+[else]
+[className/]
+[/if]
+[/template]
 
 [query public existAttribute(a : Property, cl : Class) : Boolean = 
 
