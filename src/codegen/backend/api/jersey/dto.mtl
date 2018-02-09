@@ -24,13 +24,14 @@ import java.util.Date;
 @XmlRootElement
 public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
 
-[for(b: Property | c.allAttributes())]
-[b.existAttribute(c.getGeneralizationClass())/]
-[/for]
+
 [if(c.isGeneralization())]
+[for (b : Property | c.allAttributes())]
+[b.name/]
+[/for]
 [for(a : Property | c.getGeneralizationClass().allAttributes())]
 
-
+[a.name/]
 [a.existAttribute(c)/]
     [if (a.existAttribute(c)=false)]
       
@@ -123,6 +124,7 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [/template]
 
 [query public existAttribute(a : Property, cl : Class) : Boolean = 
+
 cl.allAttributes()->select(a1 | a1.name=a.name)->notEmpty()
 /]
 
