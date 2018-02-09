@@ -88,33 +88,35 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 [for (a : Property | c.getRelationshipAttributes())] 
 
 [if (a.isOne2Many())]
- private List<[a.getClass().getMinimumDTOName()/]> [a.getClass().name/]s = new ArrayList<>();
+ private List<[a.getClass().getMinimumDTOName()/]> [a.getClass().name.toLower()/]s = new ArrayList<>();
 [/if]
 
 [if (a.isMany2One())]
- private [a.getClass().getMinimumDTOName()/] [a.getClass().name/];
+ private [a.getClass().getMinimumDTOName()/] [a.getClass().name.toLower()/];
 [/if]
 [/for]
+
 public [className/]() {
         super();
     }
+
 [for (a : Property | c.getRelationshipAttributes())] 
 [if (a.isOne2Many())]
     public List<[a.getClass().getMinimumDTOName()/]> [a.getter()/]() {
-        return [a.getClass().name/]s;
+        return [a.getClass().name.toLower()/]s;
     }
  
     public void [a.setter()/](List<[a.getClass().getMinimumDTOName()/]> [a.getClass().name.toLower()/]s) {
-        this.[a.getClass().name/]s = [a.getClass().name.toLower()/]s;
+        this.[a.getClass().name.toLower()/]s = [a.getClass().name.toLower()/]s;
     }
 [/if]
 [if (a.isMany2One())]
     public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
-        return [a.getClass().name/];
+        return [a.getClass().name.toLower()/];
     }
  
     public void [a.setter()/]([a.getClass().getMinimumDTOName()/] [a.getClass().name.toLower()/]) {
-        this.[a.getClass().name/] = [a.getClass().name.toLower()/];
+        this.[a.getClass().name.toLower()/] = [a.getClass().name.toLower()/];
     }
 [/if]
 [/for]
