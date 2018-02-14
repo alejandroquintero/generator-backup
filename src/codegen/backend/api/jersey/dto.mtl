@@ -30,9 +30,9 @@ public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationCl
 
 [if(c.name.contains('DetailDTO'))]
 [for (a : Property | c.getRelationshipAttributes())] 
-
-[if (a.isOne2Many())]
 [a.getLabel()/]
+[if (a.isOne2Many())]
+
  private List<[a.getClass().name/]> [a.getClass().name.toLower()/]s = new ArrayList<>();
 [/if]
 
