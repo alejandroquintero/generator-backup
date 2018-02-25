@@ -293,7 +293,7 @@ endif
 [if(m.valueOf('package')=null)]
 ['/src/main/java/'.concat(m.baseGroup().replaceAll('[.]', '/')).concat('/')/]
 [else]
-[m.valueOf('package').concat('/')/]
+['/'.concat(m.valueOf('package')).concat('/')/]
 [/if]
 [/template]
 
