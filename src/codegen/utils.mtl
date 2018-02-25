@@ -290,7 +290,11 @@ endif
 [/template]
 
 [template public basePath(m : Model)]
+[if(m.valueOf('package')=null)]
 ['/src/main/java/'.concat(m.baseGroup().replaceAll('[.]', '/')).concat('/')/]
+[else]
+[m.valueOf('package')/]
+[/if]
 [/template]
 
 [template public basePathAuth0(m : Model)]
