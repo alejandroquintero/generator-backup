@@ -16,7 +16,7 @@
 /*
 [c.getModel().license()/]
 */
-package [c.getModel().baseGroup()/].dtos.minimum;
+package [c.getModel().baseGroup()/].dtos;
 
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
