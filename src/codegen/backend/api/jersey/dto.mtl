@@ -30,10 +30,15 @@ public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationCl
 
 [if(c.name.contains('DetailDTO'))]
 [for (a : Property | c.getRelationshipAttributes())] 
-[a.getLabel()/]
+
 [if (a.isOne2Many())]
+[for(as:Association | a.getClass().getAssociations())]
+[for(pp:Property | as.memberEnd)]
 
  private List<[a.getClass().name/]> [a.getClass().name.toLower()/]s = new ArrayList<>();
+
+[/for]
+[/for]
 [/if]
 
 [if (a.isMany2One())]
