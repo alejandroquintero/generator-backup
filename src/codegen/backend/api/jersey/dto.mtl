@@ -32,21 +32,18 @@ public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationCl
 [for (a : Property | c.getRelationshipAttributes())] 
 
 [if (a.isOne2Many())]
-[for(as:Association | a.getClass().getAssociations())]
-[for(pp:Property | as.memberEnd)]
 
- private List<[a.getClass().name/]> [a.getClass().name.toLower()/]s = new ArrayList<>();
 
-[/for]
-[/for]
+ private List<[a.getClass().name/]> [a.name/] = new ArrayList<>();
+
 [/if]
 
 [if (a.isMany2One())]
- private [a.getClass().name/] [a.getClass().name.toLower()/];
+ private [a.getClass().name/] [a.name/];
 [/if]
 
 [if (a.isOne2One())]
- private [a.getClass().name/] [a.getClass().name.toLower()/];
+ private [a.getClass().name/] [a.name/];
 [/if]
 [/for]
 
@@ -57,31 +54,31 @@ public [c.name/]() {
 [for (a : Property | c.getRelationshipAttributes())] 
 [if (a.isOne2Many())]
     public List<[a.getClass().name/]> [a.getter()/]() {
-        return [a.getClass().name.toLower()/]s;
+        return [a.name/];
     }
  
-    public void [a.setter()/](List<[a.getClass().name/]> [a.getClass().name.toLower()/]s) {
-        this.[a.getClass().name.toLower()/]s = [a.getClass().name.toLower()/]s;
+    public void [a.setter()/](List<[a.getClass().name/]> [a.name/]) {
+        this.[a.name/] = [a.name/];
     }
 [/if]
 [if (a.isMany2One())]
     
 public [a.getClass().name/] [a.getter()/]() {
-        return [a.getClass().name.toLower()/];
+        return [a.name/];
     }
  
-    public void [a.setter()/]([a.getClass().name/] [a.getClass().name.toLower()/]) {
-        this.[a.getClass().name.toLower()/] = [a.getClass().name.toLower()/];
+    public void [a.setter()/]([a.getClass().name/] [a.name/]) {
+        this.[a.name/] = [a.name/];
     }
 
 [/if]
 [if (a.isOne2One())]
     public [a.getClass().name/] [a.getter()/]() {
-        return [a.getClass().name.toLower()/];
+        return [a.name/];
     }
  
-    public void [a.setter()/]([a.getClass().name/] [a.getClass().name.toLower()/]) {
-        this.[a.getClass().name.toLower()/] = [a.getClass().name.toLower()/];
+    public void [a.setter()/]([a.getClass().name/] [a.name/]) {
+        this.[a.name/] = [a.name/];
     }
 
 [/if]
