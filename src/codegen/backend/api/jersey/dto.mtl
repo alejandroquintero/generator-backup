@@ -26,6 +26,16 @@ import java.util.Date;
 @XmlRootElement
 public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().name/][/if] implements Serializable{
 
+[for (a: Association | c.getAssociations())]
+
+[for(p:Property |a.ownedEnd)]
+
+[p.name/]
+
+[/for]
+
+[/for]
+
 
 
 [if(c.name.contains('DetailDTO'))]
