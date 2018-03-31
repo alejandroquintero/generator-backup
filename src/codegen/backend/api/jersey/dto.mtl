@@ -28,7 +28,7 @@ public class [c.name/] [if(c.isGeneralization())] extends [c.getGeneralizationCl
 
 [for (a: Association | c.getAssociations())]
 
-[for(p:Property |a.ownedEnd)]
+[for(p:Property |a.memberEnd)]
 
 [p.name/]
 
