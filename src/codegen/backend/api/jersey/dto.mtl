@@ -75,6 +75,17 @@ private [p.type.name/] [p.name/];
 /*
 [c.getModel().license()/]
 */
+
+[for (a: Association | c.getAssociations())]
+
+[for(p:Property |a.memberEnd)]
+
+[p.name/]
+
+[/for]
+
+[/for]
+
 package [c.getModel().baseGroup()/].dtos;
 [for (a : Property | c.getRelationshipAttributes())]
 [if (a.isOne2Many())]
