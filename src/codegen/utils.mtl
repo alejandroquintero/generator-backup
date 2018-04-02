@@ -71,6 +71,14 @@ c.getAssociations()->collect( asc |
                 a.getUpper() = 1
             and a.aggregation = AggregationKind::none)
         )
+       and (a.aggregation <> AggregationKind::none implies (
+                a.getOtherEnd().getUpper() = *
+            and a.getOtherEnd().aggregation = AggregationKind::none)
+        )
+        and (a.getOtherEnd().aggregation <> AggregationKind::none implies (
+                a.getUpper() = *
+            and a.aggregation = AggregationKind::none)
+        )
         and (a.isComposite() implies a.getOtherEnd().isNavigable())
     )
 )->asSet()
