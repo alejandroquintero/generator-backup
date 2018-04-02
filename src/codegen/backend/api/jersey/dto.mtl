@@ -76,15 +76,7 @@ private [p.type.name/] [p.name/];
 [c.getModel().license()/]
 */
 
-[for (a: Association | c.getAssociations())]
 
-[for(p:Property |a.memberEnd)]
-
-[p.name/]
-
-[/for]
-
-[/for]
 
 package [c.getModel().baseGroup()/].dtos;
 [for (a : Property | c.getRelationshipAttributes())]
@@ -112,6 +104,22 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 
 [if(a.isMany2Many())]
 private List<[a.getClass().getMinimumDTOName()/]> [a.name/] = new ArrayList<>();
+[/if]
+[if(a.isMany2Many())]
+
+[for (b: Association | c.getAssociations())]
+
+[for(p:Property |b.memberEnd)]
+[if(p.aggregation = 'shared')]
+private List<[a.getClass().getMinimumDTOName()/]> [p.name/] = new ArrayList<>();
+[/if]
+[if(p.aggregation = 'none' and p.getOtherEnd().aggregation = 'shared')]
+private List<[a.getClass().getMinimumDTOName()/]> [p.name/] = new ArrayList<>();
+[/if]
+[/for]
+
+[/for]
+
 [/if]
 
 [if (a.isOne2One())]
