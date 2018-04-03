@@ -95,7 +95,10 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 
 [for (as: Association | c.getAssociations())]
 
+
 [for(p:Property |as.memberEnd)]
+[p.getClass().name/] ==>
+[className/] ==>
 [if (p.aggregation = AggregationKind::shared and p.getClass().name = className)]
 private List<[p.getClass().getMinimumDTOName()/]> [p.name/] = new ArrayList<>();
 [/if]
