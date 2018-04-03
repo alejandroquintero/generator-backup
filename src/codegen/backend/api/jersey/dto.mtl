@@ -165,6 +165,11 @@ public [className/]() {
         super();
     }
 
+[for (as: Association | c.getAssociations())]
+
+
+[for(p:Property |as.memberEnd)]
+[if (p.aggregation <> AggregationKind::shared)]
 public [className/]([c.getEntityName()/] entity) {
         super(entity);
         [for (a : Property | c.getReferences(true))]
@@ -186,7 +191,32 @@ public [className/]([c.getEntityName()/] entity) {
 [/for]
         return entity;
     }
+[/if]
+[if (p.getOtherEnd().aggregation <> AggregationKind::shared)]
+public [className/]([c.getEntityName()/] entity) {
+        super(entity);
+        [for (a : Property | c.getReferences(true))]
+        if (entity.[a.getter()/]()!=null){
+        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
+        }
+        [/for]
+        
+    }
 
+   
+    @Override
+    public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+[for (a : Property | c.getReferences(true))]
+        if (this.[a.getter()/]()!=null){
+        entity.[a.setter()/](this.[a.getter()/]().toEntity());
+        }
+[/for]
+        return entity;
+    }
+[/if]
+[/for]
+[/for]
 [for (a : Property | c.getRelationshipAttributes())] 
 
 [if (a.isOne2Many())]
