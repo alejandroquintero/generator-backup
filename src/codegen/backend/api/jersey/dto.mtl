@@ -40,6 +40,42 @@ private [p.type.name/] [p.name/];
 
     public [className/]() {
     }
+
+ public [className/]([c.getEntityName()/] entity) {
+	   if (entity!=null){
+    [if(c.isGeneralization())]
+    [for(a : Property | c.getGeneralizationClass().allAttributes())]
+        [if (a.existAttribute(c)=false)]
+        this.[a.name/]=entity.[a.getter()/]();
+        [/if]
+    [/for]
+    [/if]
+    [for(a : Property | c.allAttributes())]
+        this.[a.name/]=entity.[a.getter()/]();
+	[/for]
+       }
+    }
+
+    /**
+     * Convierte un objeto [className/] a [c.getEntityName()/].
+     *
+     * @return Nueva objeto [c.getEntityName()/].
+     * @generated
+     */
+    public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = new [c.getEntityName()/]();
+    [if(c.isGeneralization())]
+    [for(a : Property | c.getGeneralizationClass().allAttributes())]
+        [if (a.existAttribute(c)=false)]
+        entity.[a.setter()/](this.[a.getter()/]());
+        [/if]
+    [/for]
+    [/if]
+	[for(a : Property | c.allAttributes())]
+        entity.[a.setter()/](this.[a.getter()/]());
+	[/for]
+    return entity;
+    }
 [if(not c.isGeneralization())]
 [for (a : Property | c.allAttributes())]
     
@@ -109,6 +145,7 @@ private List<[p.getClass().getMinimumDTOName()/]> [p.name/] = new ArrayList<>();
 
 [/for]
 
+
 [for (a : Property | c.getRelationshipAttributes())] 
 
 [if (a.isOne2Many())]
@@ -117,11 +154,6 @@ private List<[p.getClass().getMinimumDTOName()/]> [p.name/] = new ArrayList<>();
 
 [if (a.isMany2One())]
  private [a.getClass().getMinimumDTOName()/] [a.name/];
-[/if]
-
-[if(a.isMany2Many())]
-private List<[a.getClass().getMinimumDTOName()/]> [a.name/] = new ArrayList<>();
-
 [/if]
 
 [if (a.isOne2One())]
@@ -133,8 +165,32 @@ public [className/]() {
         super();
     }
 
+public [className/]([c.getEntityName()/] entity) {
+        super(entity);
+        [for (a : Property | c.getReferences(true))]
+        if (entity.[a.getter()/]()!=null){
+        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
+        }
+        [/for]
+        
+    }
+
+   
+    @Override
+    public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+[for (a : Property | c.getReferences(true))]
+        if (this.[a.getter()/]()!=null){
+        entity.[a.setter()/](this.[a.getter()/]().toEntity());
+        }
+[/for]
+        return entity;
+    }
+
 [for (a : Property | c.getRelationshipAttributes())] 
+
 [if (a.isOne2Many())]
+
     public List<[a.getClass().getMinimumDTOName()/]> [a.getter()/]() {
         return [a.name/];
     }
@@ -144,6 +200,7 @@ public [className/]() {
     }
 [/if]
 [if (a.isMany2One())]
+  
     public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
         return [a.name/];
     }
@@ -153,6 +210,7 @@ public [className/]() {
     }
 [/if]
 [if (a.isOne2One())]
+
     public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
         return [a.name/];
     }
@@ -162,15 +220,62 @@ public [className/]() {
     }
 [/if]
 
-[if (a.isMany2Many())]
-    public List<[a.getClass().getMinimumDTOName()/]> [a.getter()/]() {
-        return [a.name/];
+[/for]
+[for (as: Association | c.getAssociations())]
+
+
+[for(p:Property |as.memberEnd)]
+
+[if (p.aggregation = AggregationKind::shared and p.getClass().name = c.name)]
+
+ public [className/]([c.getEntityName()/] entity) {
+  super(entity);
+if (entity.[p.getter()/]()!=null){
+        this.[p.name/] = new [p.getClass().getMinimumDTOName()/](entity.[p.getter()/]());
+        }
+ }
+ 
+  public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+    if (this.[p.getter()/]()!=null){
+        entity.[p.setter()/](this.[p.getter()/]().toEntity());
+}
+}
+
+ public List<[p.getClass().getMinimumDTOName()/]> [p.getter()/]() {
+        return [p.name/];
     }
  
-    public void [a.setter()/](List<[a.getClass().getMinimumDTOName()/]> [a.name/]) {
-        this.[a.name/] = [a.name/];
+    public void [p.setter()/](List<[p.getClass().getMinimumDTOName()/]> [p.name/]) {
+        this.[p.name/] = [p.name/];
     }
 [/if]
+[if (p.getOtherEnd().aggregation = AggregationKind::shared and p.getClass().name = c.name)]
+
+public [className/]([c.getEntityName()/] entity) {
+  super(entity);
+if (entity.[p.getter()/]()!=null){
+        this.[p.name/] = new [p.getClass().getMinimumDTOName()/](entity.[p.getter()/]());
+        }
+ }
+ 
+  public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+    if (this.[p.getter()/]()!=null){
+        entity.[p.setter()/](this.[p.getter()/]().toEntity());
+}
+}
+
+ public List<[p.getClass().getMinimumDTOName()/]> [p.getter()/]() {
+        return [p.name/];
+    }
+ 
+    public void [p.setter()/](List<[p.getClass().getMinimumDTOName()/]> [p.name/]) {
+        this.[p.name/] = [p.name/];
+    }
+[/if]
+
+[/for]
 
 [/for]
 }
