@@ -222,10 +222,10 @@ c.getAssociations()->collect(a | a.memberEnd->select(m |m.type.name = c.name))->
 [template public setDetailDTOAttributes(c:Class)]
 [for(p:Property | c.getMemberEnd())]
 [if(p.getOtherEnd().getUpper() = 1)]
-private [c.getMinimumDTOName()/] [p.getOtherEnd().name/];
+private [p.getOtherEnd().getClass().getMinimumDTOName()/] [p.getOtherEnd().name/];
 [/if]
 [if(p.getOtherEnd().getUpper() = -1)]
-private List<[c.getMinimumDTOName()/]> [p.getOtherEnd().name/];
+private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd().name/];
 [/if]
 [/for]
 [/template]
