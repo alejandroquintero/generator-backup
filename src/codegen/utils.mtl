@@ -219,6 +219,7 @@ endif
 c.getAssociations()->collect(a | a.memberEnd->select(m |m.type.name = c.name))->asSet()
 /]
 
+
 [template public setDetailDTOAttributes(c:Class)]
 [for(p:Property | c.getMemberEnd())]
 [if(p.getOtherEnd().getUpper() = 1)]
@@ -252,6 +253,35 @@ private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd()
 
 [/if]
 [/for]
+[/template]
+
+
+[template public setDetailDTOConstructor(c:Class) ]
+
+public [c.getBasicDTOName()/]([c.getEntityName()/] entity) {
+        super(entity);       
+        [for (a : Property | c.getMemberEnd())]
+        [if (a.aggregation = AggregationKind::composite)]
+        if (entity.[a.getter()/]()!=null){
+        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
+        }
+        [/if]
+        [/for]
+        
+    }
+[/template]
+[template public setDetailDTOtoEntity(c:Class)]
+public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+[for (a : Property | c.getMemberEnd())]
+    [if (a.aggregation = AggregationKind::composite)]
+        if (this.[a.getter()/]()!=null){
+        entity.[a.setter()/](this.[a.getter()/]().toEntity());
+        }
+    [/if]
+[/for]
+        return entity;
+    }
 [/template]
 
 
