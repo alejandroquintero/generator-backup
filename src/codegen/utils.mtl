@@ -237,7 +237,7 @@ private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd()
         return [p.getOtherEnd().name/];
     }
  
-    public void [p.setter()/]([p.getOtherEnd().getClass().getMinimumDTOName()/] [p.getOtherEnd().name/]) {
+    public void [p.getOtherEnd().setter()/]([p.getOtherEnd().getClass().getMinimumDTOName()/] [p.getOtherEnd().name/]) {
         this.[p.getOtherEnd().name/] = [p.getOtherEnd().name/];
     }
 [/if]
@@ -246,7 +246,7 @@ private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd()
         return [p.getOtherEnd().name/];
     }
  
-    public void [p.setter()/](List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd().name/]) {
+    public void [p.getOtherEnd().setter()/](List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd().name/]) {
         this.[p.getOtherEnd().name/] = [p.getOtherEnd().name/];
     }
 
