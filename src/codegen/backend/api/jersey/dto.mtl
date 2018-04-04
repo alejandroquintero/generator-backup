@@ -133,11 +133,11 @@ public class [className/] extends [c.getMinimumDTOName()/]{
 public [className/]() {
         super();
     }
-
+[if(c.hasCompositeAssociations())]
 [c.setDetailDTOConstructor()/]
 
 [c.setDetailDTOtoEntity()/]
-
+[/if]
 [c.setDetailDTOGettersAndSetters()/]
 
 }
