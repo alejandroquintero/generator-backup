@@ -230,6 +230,30 @@ private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd()
 [/for]
 [/template]
 
+[template public setDetailDTOGettersAndSetters(c:Class)]
+[for(p:Property | c.getMemberEnd())]
+[if(p.getOtherEnd().getUpper() = 1)]
+ public [p.getOtherEnd().getClass().getMinimumDTOName()/] [p.getOtherEnd().getter()/]() {
+        return [p.getOtherEnd().name/];
+    }
+ 
+    public void [p.setter()/]([p.getOtherEnd().getClass().getMinimumDTOName()/] [p.getOtherEnd().name/]) {
+        this.[p.getOtherEnd().name/] = [p.getOtherEnd().name/];
+    }
+[/if]
+[if(p.getOtherEnd().getUpper() = -1)]
+ public List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd().getter()/]() {
+        return [p.getOtherEnd().name/];
+    }
+ 
+    public void [p.setter()/](List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd().name/]) {
+        this.[p.getOtherEnd().name/] = [p.getOtherEnd().name/];
+    }
+
+[/if]
+[/for]
+[/template]
+
 
 [template public getJavaType(a : Property) post (trim())]
 [if (a.type.name = 'Image')]

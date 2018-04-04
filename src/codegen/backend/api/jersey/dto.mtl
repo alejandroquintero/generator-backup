@@ -25,91 +25,183 @@ import java.util.Date;
 public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
 
 
-[if(c.isGeneralization())]
-[for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
-private [p.type.name/] [p.name/];
-[/for]
-[/if]
-
-[if(not c.isGeneralization())]
-[for(a : Property | c.allAttributes())]
-   
-    private [a.type.name/] [a.name/];
-[/for]
- [/if]
+[c.setDetailDTOAttributes()/]
 
     public [className/]() {
     }
 
- public [className/]([c.getEntityName()/] entity) {
-	   if (entity!=null){
-    [if(c.isGeneralization())]
-    [for(a : Property | c.getGeneralizationClass().allAttributes())]
-        [if (a.existAttribute(c)=false)]
-        this.[a.name/]=entity.[a.getter()/]();
-        [/if]
-    [/for]
-    [/if]
-    [for(a : Property | c.allAttributes())]
-        this.[a.name/]=entity.[a.getter()/]();
-	[/for]
-       }
-    }
 
-    /**
-     * Convierte un objeto [className/] a [c.getEntityName()/].
-     *
-     * @return Nueva objeto [c.getEntityName()/].
-     * @generated
-     */
-    public [c.getEntityName()/] toEntity() {
-        [c.getEntityName()/] entity = new [c.getEntityName()/]();
-    [if(c.isGeneralization())]
-    [for(a : Property | c.getGeneralizationClass().allAttributes())]
-        [if (a.existAttribute(c)=false)]
-        entity.[a.setter()/](this.[a.getter()/]());
-        [/if]
-    [/for]
-    [/if]
-	[for(a : Property | c.allAttributes())]
-        entity.[a.setter()/](this.[a.getter()/]());
-	[/for]
-    return entity;
-    }
-[if(not c.isGeneralization())]
-[for (a : Property | c.allAttributes())]
-    
-    public [a.type.name/] [a.getter()/]() {
-        return [a.name/];
-    }
-  
-    public void [a.setter()/]([a.type.name/] [a.name.toLower()/]) {
-        this.[a.name/] = [a.name.toLower()/];
-    }
-
-[/for]
-[/if]
-[if(c.isGeneralization())]
-    [for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
-          
-    public [p.type.name/] [p.getter()/]() {
-        return [p.name/];
-    }
-
-    public void [p.setter()/]([p.type.name/] [p.name.toLower()/]) {
-        this.[p.name/] = [p.name.toLower()/];
-    }
-        
-    [/for]
-[/if]
-}
+[c.setDetailDTOGettersAndSetters()/]
 [/file]
 [/template]
 
 [template protected genBasicDTO(c : Class, path: String) {className : String = c.getBasicDTOName();}]
 [file (path.concat(className+'.java'), false, 'UTF-8')]
-[c.setDetailDTOAttributes()/]
+/*
+[c.getModel().license()/]
+*/
 
+
+
+package [c.getModel().baseGroup()/].dtos;
+[for (a : Property | c.getRelationshipAttributes())]
+[if (a.isOne2Many() or a.isMany2Many())]
+import java.util.List;
+import java.util.ArrayList;
+[/if]
+[/for]
+import [c.getModel().baseGroup()/].dtos;
+import javax.xml.bind.annotation.XmlRootElement;
+
+
+@XmlRootElement
+public class [className/] extends [c.getMinimumDTOName()/]{
+
+[for (as: Association | c.getAssociations())]
+[for(p:Property |as.memberEnd)]
+[if (p.aggregation = AggregationKind::shared and p.getClass().name = c.name)]
+private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd().name/] = new ArrayList<>();
+[/if]
+[if (p.getOtherEnd().aggregation = AggregationKind::shared and p.getClass().name = c.name)]
+private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd().name/] = new ArrayList<>();
+[/if]
+[/for]
+[/for]
+[for (a : Property | c.getRelationshipAttributes())] 
+[if (a.isOne2Many())]
+ private List<[a.getClass().getMinimumDTOName()/]> [a.name/] = new ArrayList<>();
+[/if]
+[if (a.isMany2One())]
+ private [a.getClass().getMinimumDTOName()/] [a.name/];
+[/if]
+[if (a.isOne2One())]
+ private [a.getClass().getMinimumDTOName()/] [a.name/];
+[/if]
+[/for]
+
+public [className/]() {
+        super();
+    }
+
+[for (as: Association | c.getAssociations())]
+[for(p:Property |as.memberEnd)]
+[if (p.aggregation <> AggregationKind::shared and p.getOtherEnd().aggregation <> AggregationKind::shared)]
+public [className/]([c.getEntityName()/] entity) {
+        super(entity);
+        [for (a : Property | c.getReferences(true))]
+        if (entity.[a.getter()/]()!=null){
+        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
+        }
+        [/for]
+        
+    }
+   
+    @Override
+    public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+[for (a : Property | c.getReferences(true))]
+        if (this.[a.getter()/]()!=null){
+        entity.[a.setter()/](this.[a.getter()/]().toEntity());
+        }
+[/for]
+        return entity;
+    }
+[/if]
+
+[/for]
+[/for]
+[for (a : Property | c.getRelationshipAttributes())] 
+
+[if (a.isOne2Many())]
+
+    public List<[a.getClass().getMinimumDTOName()/]> [a.getter()/]() {
+        return [a.name/];
+    }
+ 
+    public void [a.setter()/](List<[a.getClass().getMinimumDTOName()/]> [a.name/]) {
+        this.[a.name/] = [a.name/];
+    }
+[/if]
+[if (a.isMany2One())]
+  
+    public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
+        return [a.name/];
+    }
+ 
+    public void [a.setter()/]([a.getClass().getMinimumDTOName()/] [a.name/]) {
+        this.[a.name/] = [a.name/];
+    }
+[/if]
+[if (a.isOne2One())]
+
+    public [a.getClass().getMinimumDTOName()/] [a.getter()/]() {
+        return [a.name/];
+    }
+ 
+    public void [a.setter()/]([a.getClass().getMinimumDTOName()/] [a.name/]) {
+        this.[a.name/] = [a.name/];
+    }
+[/if]
+
+[/for]
+[for (as: Association | c.getAssociations())]
+
+
+[for(p:Property |as.memberEnd)]
+
+[if (p.aggregation = AggregationKind::shared and p.getClass().name = c.name)]
+
+ public [className/]([c.getEntityName()/] entity) {
+  super(entity);
+if (entity.[p.getter()/]()!=null){
+        this.[p.name/] = new [p.getClass().getMinimumDTOName()/](entity.[p.getter()/]());
+        }
+ }
+ 
+  public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+    if (this.[p.getter()/]()!=null){
+        entity.[p.setter()/](this.[p.getter()/]().toEntity());
+}
+}
+
+ public List<[p.getClass().getMinimumDTOName()/]> [p.getter()/]() {
+        return [p.name/];
+    }
+ 
+    public void [p.setter()/](List<[p.getClass().getMinimumDTOName()/]> [p.name/]) {
+        this.[p.name/] = [p.name/];
+    }
+[/if]
+[if (p.getOtherEnd().aggregation = AggregationKind::shared and p.getClass().name = c.name)]
+
+public [className/]([c.getEntityName()/] entity) {
+  super(entity);
+if (entity.[p.getter()/]()!=null){
+        this.[p.name/] = new [p.getClass().getMinimumDTOName()/](entity.[p.getter()/]());
+        }
+ }
+ 
+  public [c.getEntityName()/] toEntity() {
+        [c.getEntityName()/] entity = super.toEntity();
+    if (this.[p.getter()/]()!=null){
+        entity.[p.setter()/](this.[p.getter()/]().toEntity());
+}
+}
+
+ public List<[p.getClass().getMinimumDTOName()/]> [p.getter()/]() {
+        return [p.name/];
+    }
+ 
+    public void [p.setter()/](List<[p.getClass().getMinimumDTOName()/]> [p.name/]) {
+        this.[p.name/] = [p.name/];
+    }
+[/if]
+
+[/for]
+
+[/for]
+}
 [/file]
 [/template]
 
