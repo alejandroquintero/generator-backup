@@ -255,32 +255,6 @@ private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd()
 [/for]
 [/template]
 
-
-[template public setDetailDTOConstructor(c:Class) ]
-
-public [c.getBasicDTOName()/]([c.getEntityName()/] entity) {
-        super(entity);
-        [for (a : Property | c.getReferences(true))]
-        if (entity.[a.getter()/]()!=null){
-        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
-        }
-        [/for]
-        
-    }
-[/template]
-[template public setDetailDTOtoEntity(c:Class)]
-  public [c.getEntityName()/] toEntity() {
-        [c.getEntityName()/] entity = super.toEntity();
-[for (a : Property | c.getReferences(true))]
-        if (this.[a.getter()/]()!=null){
-        entity.[a.setter()/](this.[a.getter()/]().toEntity());
-        }
-[/for]
-        return entity;
-    }
-[/template]
-
-
 [template public getJavaType(a : Property) post (trim())]
 [if (a.type.name = 'Image')]
     String
