@@ -41,22 +41,10 @@ private [p.type.name/] [p.name/];
     public [className/]() {
     }
 
- 
-public [className/]([c.getEntityName()/] entity) {
-	   if (entity!=null){
-    [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
-    this.[n.name/]=entity.[n.getter()/]();
-    [/for]    
-       }
-    }
+[c.setConstructor()/]
 
- public [c.getEntityName()/] toEntity() {
-        [c.getEntityName()/] entity = new [c.getEntityName()/]();
-        [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
-        entity.[n.setter()/](this.[n.getter()/]());
-        [/for]
-        return entity;
-    }
+[c.setToEntity()/] 
+
 
 [if(not c.isGeneralization())]
 [for (a : Property | c.allAttributes())]
