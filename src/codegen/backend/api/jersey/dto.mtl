@@ -41,41 +41,23 @@ private [p.type.name/] [p.name/];
     public [className/]() {
     }
 
- public [className/]([c.getEntityName()/] entity) {
+ 
+public [className/]([c.getEntityName()/] entity) {
 	   if (entity!=null){
-    [if(c.isGeneralization())]
-    [for(a : Property | c.getGeneralizationClass().allAttributes())]
-        [if (a.existAttribute(c)=false)]
-        this.[a.name/]=entity.[a.getter()/]();
-        [/if]
-    [/for]
-    [/if]
-    [for(a : Property | c.allAttributes())]
-        this.[a.name/]=entity.[a.getter()/]();
-	[/for]
+    [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
+    this.[n.name/]=entity.[n.getter()/]();
+    [/for]    
        }
     }
 
-    /**
-     * Convierte un objeto [className/] a [c.getEntityName()/].
-     *
-     * @return Nueva objeto [c.getEntityName()/].
-     * @generated
-     */
-    public [c.getEntityName()/] toEntity() {
+ public [c.getEntityName()/] toEntity() {
         [c.getEntityName()/] entity = new [c.getEntityName()/]();
-    [if(c.isGeneralization())]
-    [for(a : Property | c.getGeneralizationClass().allAttributes())]
-        [if (a.existAttribute(c)=false)]
-        entity.[a.setter()/](this.[a.getter()/]());
-        [/if]
-    [/for]
-    [/if]
-	[for(a : Property | c.allAttributes())]
-        entity.[a.setter()/](this.[a.getter()/]());
-	[/for]
-    return entity;
+        [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
+        entity.[n.setter()/](this.[n.getter()/]());
+        [/for]
+        return entity;
     }
+
 [if(not c.isGeneralization())]
 [for (a : Property | c.allAttributes())]
     

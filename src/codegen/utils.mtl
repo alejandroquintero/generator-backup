@@ -166,8 +166,10 @@ cl.generalization->notEmpty()
 [query public isName(a : Property) : Boolean = a.name = 'name' /]
 
 [query public getter(a : Property) : String = 'get'.concat(a.name.toUpperFirst()) /]
+[query public getter(a : NamedElement) : String = 'get'.concat(a.name.toUpperFirst()) /]
 
 [query public setter(a : Property) : String = 'set'.concat(a.name.toUpperFirst()) /]
+[query public setter(a : NamedElement) : String = 'set'.concat(a.name.toUpperFirst()) /]
 
 [query public getClass(a : Property) : Class = Class.allInstances()->any(c | c.name = a.type.name) /]
 
@@ -219,6 +221,9 @@ endif
 c.getAssociations()->collect(a | a.memberEnd->select(m |m.type.name = c.name))->asSet()
 /]
 
+[query public getInheritedAndMemberAttributes(c:Class) : Set(NamedElement) = 
+c.member->addAll(c.getInheritedMembers())
+/]
 
 [template public setDetailDTOAttributes(c:Class)]
 [for(p:Property | c.getMemberEnd())]
