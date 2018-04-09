@@ -228,6 +228,7 @@ c.member->addAll(c.getInheritedMembers())
 c.getInheritedMembers()->addAll(c.member)
 /]
 [template public setConstructor(c:Class)]
+[c.member->isEmpty()/]==>
 [if (c.member->isEmpty())]
 public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
 	   if (entity!=null){
@@ -237,6 +238,7 @@ public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
        }
     }
 [else]
+[c.member->isEmpty()/]==>
 public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
 	   if (entity!=null){
     [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
@@ -248,6 +250,7 @@ public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
 [/template]
 
 [template public setToEntity(c:Class)]
+[c.member->isEmpty()/]==>
 [if (c.member->isEmpty())]
  public [c.getEntityName()/] toEntity() {
         [c.getEntityName()/] entity = new [c.getEntityName()/]();
@@ -257,6 +260,7 @@ public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
         return entity;
     }
 [else]
+[c.member->isEmpty()/]==>
  public [c.getEntityName()/] toEntity() {
         [c.getEntityName()/] entity = new [c.getEntityName()/]();
         [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
