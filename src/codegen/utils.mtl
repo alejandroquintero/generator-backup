@@ -234,10 +234,10 @@ public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
     [if(c.isGeneralization())]
     super(entity); 
     [/if]	
-    [if(not c.member->isEmpty())]
+    [if(not c.getAllAttribs()->isEmpty())]
    if (entity!=null){
-    [for(n:NamedElement|c.member)]
-    this.[n.name/]=entity.[n.getter()/]();
+    [for(p:Property | c.getAllAttribs())]
+    this.[p.name/]=entity.[p.getter()/]();
     [/for]    
        }
     [/if]
