@@ -221,17 +221,26 @@ endif
 c.getAssociations()->collect(a | a.memberEnd->select(m |m.type.name = c.name))->asSet()
 /]
 
+[template public setAttributes(c:Class)]
+
+[for(p:Property | c.getAllAttribs())]
+private [p.type.name/] [p.name/];
+[/for]
+[/template]
+
 [template public setConstructor(c:Class)]
 
 public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
     [if(c.isGeneralization())]
     super(entity); 
     [/if]	
+    [if(not c.member->isEmpty())]
    if (entity!=null){
     [for(n:NamedElement|c.member)]
     this.[n.name/]=entity.[n.getter()/]();
     [/for]    
        }
+    [/if]
     }
     
 [/template]

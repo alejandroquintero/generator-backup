@@ -25,23 +25,7 @@ import java.util.Date;
 public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizationClass().getMinimumDTOName()/][/if] implements Serializable{
 
 
-[if(c.isGeneralization())]
-[for(a : Property | c.getGeneralizationClass().allAttributes())]
-    [if (a.existAttribute(c)=false)]
-    [if(a.isDate())]
-    @PodamStrategyValue(DateStrategy.class)
-    [/if]
-    private [a.type.name/] [a.name/];
-    [/if]
-[/for]
-[/if]
-[for(a : Property | c.allAttributes())]
-    [if(a.isDate())]
-    @PodamStrategyValue(DateStrategy.class)
-    [/if]
-    private [a.type.name/] [a.name/];
-[/for]
-
+[c.setAttributes()/]
   
 
     public [className/]() {
