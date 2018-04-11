@@ -91,12 +91,8 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 
 
 package [c.getModel().baseGroup()/].dtos;
-[for (a : Property | c.getRelationshipAttributes())]
-[if (a.isOne2Many() or a.isMany2Many())]
 import java.util.List;
 import java.util.ArrayList;
-[/if]
-[/for]
 import [c.getModel().baseGroup()/].dtos;
 import javax.xml.bind.annotation.XmlRootElement;
 

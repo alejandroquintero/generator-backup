@@ -225,21 +225,38 @@ c.getAssociations()->collect(a | a.memberEnd->select(m |m.type.name = c.name))->
 
 public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
     [if(c.isGeneralization())]
-    super(entity); 	
+    super(entity); 
+    [/if]	
    if (entity!=null){
     [for(n:NamedElement|c.member)]
     this.[n.name/]=entity.[n.getter()/]();
     [/for]    
        }
     }
-    [else]
-    if (entity!=null){
-    [for(n:NamedElement|c.member)]
-    this.[n.name/]=entity.[n.getter()/]();
-    [/for]    
-       }
-    }
-    [/if]
+    
+[/template]
+
+[template public setDetailDTOConstructor(c:Class)]
+public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
+ super(entity); 
+[for(p:Property | c.getMemberEnd())]
+[if(p.getOtherEnd().getUpper() = 1)]
+if (entity.[p.getOtherEnd().getter()/]()!=null){
+this.[p.getOtherEnd().name/] = new [p.getOtherEnd().getClass().getMinimumDTOName()/](entity.[p.getOtherEnd().getter()/]());
+}
+}
+[/if]
+[if(p.getOtherEnd().getUpper() = -1)]
+List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> ldto = new ArrayList<>();
+if (entity.[p.getOtherEnd().getter()/]()!=nul){
+ for([p.getOtherEnd().getClass().getEntityName()/] ent : entity.[p.getOtherEnd().getter()/]()){
+ ldto.add(new [p.getOtherEnd().getClass().getMinimumDTOName()/](ent));
+}
+this.[p.getOtherEnd().name/] = ldto;
+}
+}
+[/if]
+[/for]
 [/template]
 
 [template public setToEntity(c:Class)]
@@ -247,20 +264,17 @@ public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
  public [c.getEntityName()/] toEntity() {
        [if(c.isGeneralization())]
        [c.getEntityName()/] entity = super.toEntity();
+        [else]
+        [c.getEntityName()/] entity = new [c.getEntityName()/]();
+       [/if]
         [for(n:NamedElement|c.member)]
         entity.[n.setter()/](this.[n.getter()/]());
         [/for]
          return entity;
        }
-       [else]
-        [c.getEntityName()/] entity = new [c.getEntityName()/]();
-        [for(n:NamedElement|c.member)]
-        entity.[n.setter()/](this.[n.getter()/]());
-        [/for]
-        return entity;
-    }
-       [/if]
+      
 [/template]
+
 
 [template public setDetailDTOAttributes(c:Class)]
 
