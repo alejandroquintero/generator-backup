@@ -221,57 +221,49 @@ endif
 c.getAssociations()->collect(a | a.memberEnd->select(m |m.type.name = c.name))->asSet()
 /]
 
-[query public getInheritedAndMemberAttributes(c:Class) : Set(NamedElement) = 
-c.member->addAll(c.getInheritedMembers())
-/]
-[query public getMemberAndInheritedAttributes(c:Class) : Set(NamedElement) = 
-c.getInheritedMembers()->addAll(c.member)
-/]
 [template public setConstructor(c:Class)]
-[c.member->isEmpty()/]==>
-[if (c.member->isEmpty())]
+
 public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
-	   if (entity!=null){
-    [for(n:NamedElement|c.getMemberAndInheritedAttributes())]
+    [if(c.isGeneralization())]
+    super(entity); 	
+   if (entity!=null){
+    [for(n:NamedElement|c.member)]
     this.[n.name/]=entity.[n.getter()/]();
     [/for]    
        }
     }
-[else]
-[c.member->isEmpty()/]==>
-public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
-	   if (entity!=null){
-    [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
+    [else]
+    if (entity!=null){
+    [for(n:NamedElement|c.member)]
     this.[n.name/]=entity.[n.getter()/]();
     [/for]    
        }
     }
-[/if]
+    [/if]
 [/template]
 
 [template public setToEntity(c:Class)]
-[c.member->isEmpty()/]==>
-[if (c.member->isEmpty())]
+
  public [c.getEntityName()/] toEntity() {
+       [if(c.isGeneralization())]
+       [c.getEntityName()/] entity = super.toEntity();
+        [for(n:NamedElement|c.member)]
+        entity.[n.setter()/](this.[n.getter()/]());
+        [/for]
+         return entity;
+       }
+       [else]
         [c.getEntityName()/] entity = new [c.getEntityName()/]();
-        [for(n:NamedElement|c.getMemberAndInheritedAttributes())]
+        [for(n:NamedElement|c.member)]
         entity.[n.setter()/](this.[n.getter()/]());
         [/for]
         return entity;
     }
-[else]
-[c.member->isEmpty()/]==>
- public [c.getEntityName()/] toEntity() {
-        [c.getEntityName()/] entity = new [c.getEntityName()/]();
-        [for(n:NamedElement|c.getInheritedAndMemberAttributes())]
-        entity.[n.setter()/](this.[n.getter()/]());
-        [/for]
-        return entity;
-    }
-[/if]
+       [/if]
 [/template]
 
 [template public setDetailDTOAttributes(c:Class)]
+
 [for(p:Property | c.getMemberEnd())]
 [if(p.getOtherEnd().getUpper() = 1)]
 private [p.getOtherEnd().getClass().getMinimumDTOName()/] [p.getOtherEnd().name/];
@@ -303,6 +295,26 @@ private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd()
     }
 
 [/if]
+[/for]
+[/template]
+
+[template public setAttributes(c:Class)]
+[for(p:Property | c.getMemberEnd())]
+[p.visibility/] [p.type.name/] [p.name/];
+[/for]
+[/template] 
+
+[template public setGettersAndSetters(c:Class)]
+[for(p:Property | c.getMemberEnd())]
+
+ public [p.type.name/] [p.getter()/]() {
+        return [p.name/];
+    }
+  
+    public void [p.setter()/]([p.type.name/] [p.name.toLower()/]) {
+        this.[p.name/] = [p.name.toLower()/];
+    }
+
 [/for]
 [/template]
 
