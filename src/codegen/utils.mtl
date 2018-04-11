@@ -298,25 +298,9 @@ private List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> [p.getOtherEnd()
 [/for]
 [/template]
 
-[template public setAttributes(c:Class)]
-[for(p:Property | c.getMemberEnd())]
-[p.visibility/] [p.type.name/] [p.name/];
-[/for]
-[/template] 
+ 
 
-[template public setGettersAndSetters(c:Class)]
-[for(p:Property | c.getMemberEnd())]
-
- public [p.type.name/] [p.getter()/]() {
-        return [p.name/];
-    }
-  
-    public void [p.setter()/]([p.type.name/] [p.name.toLower()/]) {
-        this.[p.name/] = [p.name.toLower()/];
-    }
-
-[/for]
-[/template]
+ 
 
 [template public getJavaType(a : Property) post (trim())]
 [if (a.type.name = 'Image')]
