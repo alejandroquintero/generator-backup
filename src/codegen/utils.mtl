@@ -247,12 +247,12 @@ this.[p.getOtherEnd().name/] = new [p.getOtherEnd().getClass().getMinimumDTOName
 
 [/if]
 [if(p.getOtherEnd().getUpper() = -1)]
-List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> ldto = new ArrayList<>();
+List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> l[p.getOtherEnd().name/] = new ArrayList<>();
 if (entity.[p.getOtherEnd().getter()/]()!=nul){
  for([p.getOtherEnd().getClass().getEntityName()/] ent : entity.[p.getOtherEnd().getter()/]()){
  ldto.add(new [p.getOtherEnd().getClass().getMinimumDTOName()/](ent));
 }
-this.[p.getOtherEnd().name/] = ldto;
+this.[p.getOtherEnd().name/] = l[p.getOtherEnd().name/];
 }
 
 [/if]
