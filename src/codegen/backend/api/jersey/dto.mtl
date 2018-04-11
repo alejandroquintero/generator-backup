@@ -26,17 +26,21 @@ public class [className/] [if(c.isGeneralization())] extends [c.getGeneralizatio
 
 
 [if(c.isGeneralization())]
-[for( p : Property | c.excludeAttributes(c.getGeneralizationClass()))]
-[p.visibility/] [p.type.name/] [p.name/];
+[for(a : Property | c.getGeneralizationClass().allAttributes())]
+    [if (a.existAttribute(c)=false)]
+    [if(a.isDate())]
+    @PodamStrategyValue(DateStrategy.class)
+    [/if]
+    private [a.type.name/] [a.name/];
+    [/if]
 [/for]
 [/if]
-
-[if(not c.isGeneralization())]
 [for(a : Property | c.allAttributes())]
-   
-    [a.visibility/] [a.type.name/] [a.name/];
+    [if(a.isDate())]
+    @PodamStrategyValue(DateStrategy.class)
+    [/if]
+    private [a.type.name/] [a.name/];
 [/for]
- [/if]
 
   
 
