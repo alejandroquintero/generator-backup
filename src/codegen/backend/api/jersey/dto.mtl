@@ -106,15 +106,7 @@ public [className/]() {
         super();
     }
 
- public [className/]([c.getEntityName()/] entity) {
-        super(entity);
-        [for (a : Property | c.getReferences(true))]
-        if (entity.[a.getter()/]()!=null){
-        this.[a.name/] = new [a.getClass().getMinimumDTOName()/](entity.[a.getter()/]());
-        }
-        [/for]
-        
-    }
+ [c.setDetailDTOConstructor()/]
 
     public [c.getEntityName()/] toEntity() {
         [c.getEntityName()/] entity = super.toEntity();
