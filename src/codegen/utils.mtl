@@ -237,14 +237,14 @@ public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
 [/template]
 
 [template public setDetailDTOConstructor(c:Class)]
-public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
+public [c.getBasicDTOName()/]([c.getEntityName()/] entity) {
  super(entity); 
 [for(p:Property | c.getMemberEnd())]
 [if(p.getOtherEnd().getUpper() = 1)]
 if (entity.[p.getOtherEnd().getter()/]()!=null){
 this.[p.getOtherEnd().name/] = new [p.getOtherEnd().getClass().getMinimumDTOName()/](entity.[p.getOtherEnd().getter()/]());
 }
-}
+
 [/if]
 [if(p.getOtherEnd().getUpper() = -1)]
 List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> ldto = new ArrayList<>();
@@ -254,9 +254,10 @@ if (entity.[p.getOtherEnd().getter()/]()!=nul){
 }
 this.[p.getOtherEnd().name/] = ldto;
 }
-}
+
 [/if]
 [/for]
+}
 [/template]
 
 [template public setToEntity(c:Class)]
