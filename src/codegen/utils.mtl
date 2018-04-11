@@ -240,6 +240,11 @@ public [c.getMinimumDTOName()/]([c.getEntityName()/] entity) {
 public [c.getBasicDTOName()/]([c.getEntityName()/] entity) {
  super(entity); 
 [for(p:Property | c.getMemberEnd())]
+[if(p.getOtherEnd().getUpper() = -1)]
+List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> l[p.getOtherEnd().name/] = new ArrayList<>();
+[/if]
+[/for]
+[for(p:Property | c.getMemberEnd())]
 [if(p.getOtherEnd().getUpper() = 1)]
 if (entity.[p.getOtherEnd().getter()/]()!=null){
 this.[p.getOtherEnd().name/] = new [p.getOtherEnd().getClass().getMinimumDTOName()/](entity.[p.getOtherEnd().getter()/]());
@@ -247,7 +252,6 @@ this.[p.getOtherEnd().name/] = new [p.getOtherEnd().getClass().getMinimumDTOName
 
 [/if]
 [if(p.getOtherEnd().getUpper() = -1)]
-List<[p.getOtherEnd().getClass().getMinimumDTOName()/]> l[p.getOtherEnd().name/] = new ArrayList<>();
 if (entity.[p.getOtherEnd().getter()/]()!=nul){
  for([p.getOtherEnd().getClass().getEntityName()/] ent : entity.[p.getOtherEnd().getter()/]()){
  l[p.getOtherEnd().name/].add(new [p.getOtherEnd().getClass().getMinimumDTOName()/](ent));
