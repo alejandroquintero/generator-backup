@@ -92,15 +92,7 @@ public [className/]() {
 
  [c.setDetailDTOConstructor()/]
 
-    public [c.getEntityName()/] toEntity() {
-        [c.getEntityName()/] entity = super.toEntity();
-[for (a : Property | c.getReferences(true))]
-        if (this.[a.getter()/]()!=null){
-        entity.[a.setter()/](this.[a.getter()/]().toEntity());
-        }
-[/for]
-        return entity;
-    }
+  [c.setDetailDTOtoEntity()/]
 
 [c.setDetailDTOGettersAndSetters()/]
 
